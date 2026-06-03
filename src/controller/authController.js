@@ -1,73 +1,73 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const response = require("../utils/responseHelper");
 require("dotenv").config();
 
-class AuthController {
-  static async register(req, res) {
+const AuthController = {
+  register: async (req, res) => {
     try {
       const { nama, email, password } = req.body;
 
       if (!nama || !email || !password) {
-        return res.status(400).json({
-          status: "bad_request",
-          message: "Semua field harus diisi",
-        });
+        return response.error(res, "Semua field harus diisi", 400);
       }
 
       const existingUser = await User.findByEmail(email);
       if (existingUser) {
-        return res.status(400).json({
-          status: "bad_request",
-          message: "Email sudah terdaftar",
-        });
+        return response.error(res, "Email sudah terdaftar", 400);
       }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-
-      // HARDCODE ROLE CUSTOMER (id_role = 3)
       const id_role = 3;
 
-      const newUserId = await User.create({
+      const newUser = await User.create({
         nama,
         email,
         password: hashedPassword,
         id_role,
       });
 
-      res.status(201).json({
-        status: "success",
-        message: "Registrasi customer berhasil",
-        data: { userId: newUserId },
-      });
+      const customer = await User.createCustomerProfile(newUser.id_user);
+
+      const responseData = {
+        id_user: newUser.id_user,
+        nama: newUser.nama,
+        email: newUser.email,
+        id_role: newUser.id_role,
+        customer_profile: {
+          id_customer: customer.id_customer,
+          poin: 0,
+          is_member: false,
+          is_aktif: customer.id_aktif,
+        },
+      };
+
+      return response.success(
+        res,
+        "Registrasi customer berhasil",
+        responseData,
+        201,
+      );
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        status: "error",
-        message: "Terjadi kesalahan pada server",
-      });
+      return response.error(res, "Terjadi kesalahan pada server", 500);
     }
-  }
+  },
 
-  static async login(req, res) {
+  login: async (req, res) => {
     try {
       const { email, password } = req.body;
 
       const user = await User.findByEmail(email);
       if (!user) {
-        return res.status(404).json({
-          status: "not_found",
-          message: "User tidak ditemukan",
-        });
+        return response.error(res, "User tidak ditemukan", 404);
       }
 
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
-        return res.status(400).json({
-          status: "bad_request",
-          message: "Password salah",
-        });
+        return response.error(res, "Password salah", 400);
       }
 
       const payload = { id_user: user.id_user, id_role: user.id_role };
@@ -75,43 +75,46 @@ class AuthController {
       const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "15m",
       });
+
       const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
         expiresIn: "7d",
       });
 
       await User.updateRefreshToken(user.id_user, refreshToken);
+      const customer = await User.findCustomerByIdUser(user.id_user);
 
-      res.status(200).json({
-        status: "success",
-        message: "Login berhasil",
-        data: {
-          accessToken,
-          refreshToken,
-          user: {
-            id_user: user.id_user,
-            nama: user.nama,
-            email: user.email,
-            id_role: user.id_role,
-          },
+      const responseData = {
+        accessToken,
+        refreshToken,
+        user: {
+          id_user: user.id_user,
+          nama: user.nama,
+          email: user.email,
+          id_role: user.id_role,
         },
-      });
+        customer: customer
+          ? {
+              id_customer: customer.id_customer,
+              poin: customer.poin,
+              is_member: customer.is_member,
+            }
+          : null,
+      };
+
+      return response.success(res, "Login berhasil", responseData, 200);
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        status: "error",
-        message: "Terjadi kesalahan pada server",
-      });
+      return response.error(res, "Terjadi kesalahan pada server", 500);
     }
-  }
+  },
 
-  static async refreshToken(req, res) {
+  
+
+  refreshToken: async (req, res) => {
     try {
       const { token } = req.body;
       if (!token) {
-        return res.status(401).json({
-          status: "unauthorized",
-          message: "Refresh token dibutuhkan",
-        });
+        return response.error(res, "Refresh token dibutuhkan", 401);
       }
 
       jwt.verify(
@@ -119,18 +122,16 @@ class AuthController {
         process.env.JWT_REFRESH_SECRET,
         async (err, decoded) => {
           if (err) {
-            return res.status(403).json({
-              status: "forbidden",
-              message: "Refresh token tidak valid atau kadaluarsa",
-            });
+            return response.error(
+              res,
+              "Refresh token tidak valid atau kadaluarsa",
+              403,
+            );
           }
 
           const user = await User.findById(decoded.id_user);
           if (!user || user.refresh_token !== token) {
-            return res.status(403).json({
-              status: "forbidden",
-              message: "Refresh token tidak cocok",
-            });
+            return response.error(res, "Refresh token tidak cocok", 403);
           }
 
           const payload = { id_user: user.id_user, id_role: user.id_role };
@@ -138,39 +139,31 @@ class AuthController {
             expiresIn: "15m",
           });
 
-          res.status(200).json({
-            status: "success",
-            message: "Token berhasil diperbarui",
-            data: { accessToken: newAccessToken },
-          });
+          return response.success(
+            res,
+            "Token berhasil diperbarui",
+            { accessToken: newAccessToken },
+            200,
+          );
         },
       );
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        status: "error",
-        message: "Terjadi kesalahan pada server",
-      });
+      return response.error(res, "Terjadi kesalahan pada server", 500);
     }
-  }
+  },
 
-  static async logout(req, res) {
+  logout: async (req, res) => {
     try {
       const userId = req.user.id_user;
       await User.updateRefreshToken(userId, null);
-      res.status(200).json({
-        status: "success",
-        message: "Logout berhasil",
-        data: null,
-      });
+
+      return response.success(res, "Logout berhasil", null, 200);
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        status: "error",
-        message: "Terjadi kesalahan pada server",
-      });
+      return response.error(res, "Terjadi kesalahan pada server", 500);
     }
-  }
-}
+  },
+};
 
 module.exports = AuthController;

@@ -4,7 +4,6 @@ const { verifyToken } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Panggil method dari class AuthController
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
 router.post("/refresh", AuthController.refreshToken);

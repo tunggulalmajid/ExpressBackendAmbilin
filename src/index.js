@@ -1,30 +1,38 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const morgan = require("morgan"); // 1. Import morgan
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./config/swagger.json");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
+const setorRoutes = require("./routes/setorRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 const app = express();
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/auth", authRoutes);
+app.use("/api/setor", setorRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.get("/", (req, res) => {
   res.json({
-    message: "API Ambilin Backend is running!",
-    docs: "/api-docs",
+    message: "API Ambilin Berjalan Dengan Baik",
+    documentation: "/api-docs",
   });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Swagger Docs available at http://localhost:${PORT}/api-docs`);
+  console.log("======================================================");
+  console.log(`Server Berjalan pada port ${PORT}`);
+  console.log(`Dokumentasi Swagger http://localhost:${PORT}/api-docs`);
+  console.log("======================================================");
 });

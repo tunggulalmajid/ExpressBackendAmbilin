@@ -32,8 +32,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "nama": { "type": "string", "example": "Budi Santoso" },
-                  "email": { "type": "string", "example": "budi@gmail.com" },
+                  "nama": { "type": "string", "example": "Tunggul" },
+                  "email": { "type": "string", "example": "tunggul@gmail.com" },
                   "password": { "type": "string", "example": "password123" }
                 }
               }
@@ -61,7 +61,7 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "customer@ambilin.com"
+                    "example": "tunggul@gmail.com"
                   },
                   "password": { "type": "string", "example": "password123" }
                 }
@@ -107,14 +107,218 @@
       "delete": {
         "summary": "Logout user",
         "tags": ["Auth"],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": { "description": "Logout berhasil" },
           "401": { "description": "Akses ditolak, token tidak ditemukan" }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "summary": "Mendapatkan profil data lengkap berdasarkan user yang login",
+        "tags": ["Profile"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Berhasil Mendapatkan Data Profil",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "message": "Berhasil mendapatkan data profil",
+                  "data": {
+                    "id_user": 12,
+                    "nama": "Budi Santoso",
+                    "email": "budi@gmail.com",
+                    "id_role": 3,
+                    "foto": "https://res.cloudinary.com/.../profile.jpg",
+                    "alamat": "Jl. Mastrip No. 164, Jember",
+                    "nomor_telepon": "081234567890",
+                    "latitude": "-8.123456",
+                    "longitude": "113.123456",
+                    "customer_profile": {
+                      "id_customer": 2,
+                      "poin": 150,
+                      "is_member": false,
+                      "is_aktif": true,
+                      "expired_member_date": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
+          },
+          "404": {
+            "description": "Not Found - User tidak ditemukan"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Memperbarui data profil user (Nama, No Telp, Alamat, Koordinat)",
+        "tags": ["Profile"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nama": { "type": "string", "example": "Budi Santoso Edit" },
+                  "nomor_telepon": {
+                    "type": "string",
+                    "example": "081222333444"
+                  },
+                  "alamat": {
+                    "type": "string",
+                    "example": "Jl. Kalimantan No. 37, Jember"
+                  },
+                  "latitude": { "type": "string", "example": "-8.156789" },
+                  "longitude": { "type": "string", "example": "113.712345" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profil berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "message": "Profil berhasil diperbarui",
+                  "data": {
+                    "nama": "Budi Santoso Edit",
+                    "nomor_telepon": "081222333444",
+                    "alamat": "Jl. Kalimantan No. 37, Jember",
+                    "latitude": "-8.156789",
+                    "longitude": "113.712345"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
+          },
+          "404": {
+            "description": "Not Found - User tidak ditemukan"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/photo": {
+      "put": {
+        "summary": "Memperbarui/Mengganti foto profil user (Khusus Unggah Gambar)",
+        "tags": ["Profile"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "foto": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File gambar profil baru (jpg/png)"
+                  }
+                },
+                "required": ["foto"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Foto profil berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "message": "Foto profil berhasil diperbarui",
+                  "data": {
+                    "foto": "https://res.cloudinary.com/dbhycng5p/image/upload/v1778269675/ambilin/avatars/user_12.png"
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "File foto wajib diunggah" },
+          "401": {
+            "description": "Unauthorized - Token tidak ditemukan atau expired"
+          },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/api/setor": {
+      "post": {
+        "summary": "Mengajukan setoran sampah baru (Khusus Customer)",
+        "tags": ["Setor Sampah"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alamat": {
+                    "type": "string",
+                    "example": "Jl. Mastrip No. 164, Jember"
+                  },
+                  "latitude": { "type": "string", "example": "-8.123456" },
+                  "longitude": { "type": "string", "example": "113.123456" },
+                  "foto": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File gambar sampah (jpg/png)"
+                  }
+                },
+                "required": ["alamat", "foto"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Permintaan setor sampah berhasil dikirim",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "message": "Permintaan setor sampah berhasil dikirim",
+                  "data": {
+                    "id_setor": 15,
+                    "foto_url": "https://res.cloudinary.com/demo/image/upload/v1234/ambilin/setor_sampah/example.jpg"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Foto wajib diunggah atau input tidak valid"
+          },
+          "401": {
+            "description": "Unauthorized - Token tidak ditemukan atau expired"
+          },
+          "403": {
+            "description": "Forbidden - Hanya role Customer yang diperbolehkan"
+          },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }
