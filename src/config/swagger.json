@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://ambilin.kodetalma.my.id",
+      "url": "https://ambilin.kodetalma.my.id",
       "description": "Production"
     },
     {
