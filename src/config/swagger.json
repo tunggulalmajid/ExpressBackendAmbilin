@@ -59,10 +59,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "example": "tunggul@gmail.com"
-                  },
+                  "email": { "type": "string", "example": "tunggul@gmail.com" },
                   "password": { "type": "string", "example": "password123" }
                 }
               }
@@ -152,12 +149,8 @@
           "401": {
             "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
           },
-          "404": {
-            "description": "Not Found - User tidak ditemukan"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "404": { "description": "Not Found - User tidak ditemukan" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "put": {
@@ -209,12 +202,8 @@
           "401": {
             "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
           },
-          "404": {
-            "description": "Not Found - User tidak ditemukan"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "404": { "description": "Not Found - User tidak ditemukan" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
@@ -261,6 +250,145 @@
             "description": "Unauthorized - Token tidak ditemukan atau expired"
           },
           "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/api/manajemen-akun": {
+      "get": {
+        "summary": "Mendapatkan daftar seluruh akun (Bisa difilter lewat query role)",
+        "tags": ["Admin (Manajemen Akun)"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Saring berdasarkan ID Role: 2 (Petugas) atau 3 (Customer)",
+            "required": false,
+            "schema": { "type": "integer", "example": 2 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Berhasil mendapatkan daftar akun" },
+          "401": {
+            "description": "Unauthorized - Token tidak dikirim atau expired"
+          },
+          "403": { "description": "Forbidden - Khusus Admin Role 1" }
+        }
+      },
+      "post": {
+        "summary": "Membuat akun Petugas atau Customer baru langsung dari Panel Admin",
+        "tags": ["Admin (Manajemen Akun)"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_role": {
+                    "type": "integer",
+                    "description": "2 untuk Petugas, 3 untuk Customer",
+                    "example": 2
+                  },
+                  "nama": { "type": "string", "example": "Driver Jono" },
+                  "email": { "type": "string", "example": "jono@example.com" },
+                  "nomor_telepon": {
+                    "type": "string",
+                    "example": "0812345678"
+                  },
+                  "password": { "type": "string", "example": "password123" }
+                },
+                "required": ["id_role", "nama", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Akun baru berhasil dibuat oleh Admin" },
+          "400": {
+            "description": "Email sudah terdaftar atau input tidak lengkap"
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/manajemen-akun/{id_user}": {
+      "put": {
+        "summary": "Memperbarui data dasar user (Nama, Email, Telepon) lewat panel Admin",
+        "tags": ["Admin (Manajemen Akun)"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id_user",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID User yang akan dimodifikasi"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nama": { "type": "string", "example": "Driver Jono Edit" },
+                  "email": {
+                    "type": "string",
+                    "example": "jono_baru@example.com"
+                  },
+                  "nomor_telepon": { "type": "string", "example": "0855667788" }
+                },
+                "required": ["nama", "email", "nomor_telepon"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Data user berhasil diperbarui" },
+          "400": { "description": "Input data tidak lengkap" },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "delete": {
+        "summary": "Menonaktifkan akun secara soft delete (Mengubah status is_aktif menjadi 0)",
+        "tags": ["Admin (Manajemen Akun)"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id_user",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID User yang akan dinonaktifkan"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_role": {
+                    "type": "integer",
+                    "description": "ID Role user saat ini (2/3)",
+                    "example": 2
+                  }
+                },
+                "required": ["id_role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Akun berhasil dinonaktifkan (Soft Delete)" },
+          "400": {
+            "description": "id_role wajib disertakan / data tidak ditemukan"
+          },
+          "412": { "description": "Precondition Failed" }
         }
       }
     },
@@ -312,9 +440,7 @@
           "400": {
             "description": "Foto wajib diunggah atau input tidak valid"
           },
-          "401": {
-            "description": "Unauthorized - Token tidak ditemukan atau expired"
-          },
+          "401": { "description": "Unauthorized" },
           "403": {
             "description": "Forbidden - Hanya role Customer yang diperbolehkan"
           },

@@ -73,7 +73,7 @@ const AuthController = {
       const payload = { id_user: user.id_user, id_role: user.id_role };
 
       const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "15m",
+        expiresIn: "2d",
       });
 
       const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
@@ -108,8 +108,6 @@ const AuthController = {
     }
   },
 
-  
-
   refreshToken: async (req, res) => {
     try {
       const { token } = req.body;
@@ -136,7 +134,7 @@ const AuthController = {
 
           const payload = { id_user: user.id_user, id_role: user.id_role };
           const newAccessToken = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "15m",
+            expiresIn: "2d",
           });
 
           return response.success(

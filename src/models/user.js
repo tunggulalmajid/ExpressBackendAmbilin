@@ -57,7 +57,7 @@ const User = {
     );
     return {
       id_customer: result.insertId,
-      id_aktif: false,
+      id_aktif: true,
     };
   },
 

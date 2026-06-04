@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:8.0
+    container_name: ambilin-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ambilin-network
+
+  app:
+    build: .
+    container_name: ambilin-backend
+    restart: always
+    ports:
+      - "3010:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+    depends_on:
+      - db
+    networks:
+      - ambilin-network
+
+volumes:
+  mysql_data:
+
+networks:
+  ambilin-network:
+    driver: bridge

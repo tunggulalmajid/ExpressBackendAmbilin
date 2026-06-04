@@ -1,0 +1,44 @@
+name: Deploy Backend Ambilin to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            # Menggunakan variabel $HOME bawaan Linux agar otomatis mengarah ke user yang login
+            CONTAINER_DIR="$HOME/projects/ambilin-backend"
+
+            mkdir -p $CONTAINER_DIR
+            cd $CONTAINER_DIR
+
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git fetch --all
+              git reset --hard origin/main
+            fi
+
+            # Inject seluruh isi ENV_FILE dari GitHub Secret
+            echo "${{ secrets.ENV_FILE }}" > .env
+
+            # Memastikan DB_HOST tetap mengarah ke service container 'db' Docker Compose
+            echo "DB_HOST=db" >> .env
+
+            docker compose down
+            docker compose up -d --build

@@ -9,6 +9,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const setorRoutes = require("./routes/setorRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const manajemenAkunRoutes = require("./routes/manajemenAkunRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/auth", authRoutes);
 app.use("/api/setor", setorRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/manajemen-akun", manajemenAkunRoutes);
 
 app.get("/", (req, res) => {
   res.json({
