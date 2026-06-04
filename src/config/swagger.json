@@ -22,6 +22,82 @@
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id_user": { "type": "integer", "example": 12 },
+          "nama": { "type": "string", "example": "Budi Santoso" },
+          "email": { "type": "string", "example": "budi@gmail.com" },
+          "id_role": { "type": "integer", "example": 3 }
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "id_user": { "type": "integer", "example": 12 },
+          "nama": { "type": "string", "example": "Budi Santoso" },
+          "email": { "type": "string", "example": "budi@gmail.com" },
+          "id_role": { "type": "integer", "example": 3 },
+          "foto": {
+            "type": "string",
+            "example": "https://res.cloudinary.com/dbhycng5p/image/upload/v1/profile.jpg"
+          },
+          "alamat": {
+            "type": "string",
+            "example": "Jl. Mastrip No. 164, Jember"
+          },
+          "nomor_telepon": { "type": "string", "example": "081234567890" },
+          "latitude": { "type": "string", "example": "-8.123456" },
+          "longitude": { "type": "string", "example": "113.123456" },
+          "customer_profile": {
+            "type": "object",
+            "properties": {
+              "id_customer": { "type": "integer", "example": 2 },
+              "poin": { "type": "integer", "example": 150 },
+              "is_member": { "type": "boolean", "example": false },
+              "is_aktif": { "type": "boolean", "example": true },
+              "expired_member_date": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "JenisSampah": {
+        "type": "object",
+        "required": ["nama", "poin_per_kg"],
+        "properties": {
+          "id_jenis_sampah": { "type": "integer", "example": 1 },
+          "nama": { "type": "string", "example": "Plastik PET" },
+          "poin_per_kg": { "type": "integer", "example": 500 },
+          "is_delete": { "type": "boolean", "example": false },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "error" },
+          "message": {
+            "type": "string",
+            "example": "Terjadi kesalahan pada server"
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -35,6 +111,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["nama", "email", "password"],
                 "properties": {
                   "nama": { "type": "string", "example": "Tunggul" },
                   "email": { "type": "string", "example": "tunggul@gmail.com" },
@@ -62,6 +139,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["email", "password"],
                 "properties": {
                   "email": { "type": "string", "example": "tunggul@gmail.com" },
                   "password": { "type": "string", "example": "password123" }
@@ -87,6 +165,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["token"],
                 "properties": {
                   "token": {
                     "type": "string",
@@ -125,26 +204,15 @@
             "description": "Berhasil Mendapatkan Data Profil",
             "content": {
               "application/json": {
-                "example": {
-                  "status": "success",
-                  "message": "Berhasil mendapatkan data profil",
-                  "data": {
-                    "id_user": 12,
-                    "nama": "Budi Santoso",
-                    "email": "budi@gmail.com",
-                    "id_role": 3,
-                    "foto": "https://res.cloudinary.com/.../profile.jpg",
-                    "alamat": "Jl. Mastrip No. 164, Jember",
-                    "nomor_telepon": "081234567890",
-                    "latitude": "-8.123456",
-                    "longitude": "113.123456",
-                    "customer_profile": {
-                      "id_customer": 2,
-                      "poin": 150,
-                      "is_member": false,
-                      "is_aktif": true,
-                      "expired_member_date": null
-                    }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "message": {
+                      "type": "string",
+                      "example": "Berhasil mendapatkan data profil"
+                    },
+                    "data": { "$ref": "#/components/schemas/Profile" }
                   }
                 }
               }
@@ -154,7 +222,14 @@
             "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
           },
           "404": { "description": "Not Found - User tidak ditemukan" },
-          "500": { "description": "Internal Server Error" }
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       },
       "put": {
@@ -189,15 +264,39 @@
             "description": "Profil berhasil diperbarui",
             "content": {
               "application/json": {
-                "example": {
-                  "status": "success",
-                  "message": "Profil berhasil diperbarui",
-                  "data": {
-                    "nama": "Budi Santoso Edit",
-                    "nomor_telepon": "081222333444",
-                    "alamat": "Jl. Kalimantan No. 37, Jember",
-                    "latitude": "-8.156789",
-                    "longitude": "113.712345"
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "message": {
+                      "type": "string",
+                      "example": "Profil berhasil diperbarui"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "nama": {
+                          "type": "string",
+                          "example": "Budi Santoso Edit"
+                        },
+                        "nomor_telepon": {
+                          "type": "string",
+                          "example": "081222333444"
+                        },
+                        "alamat": {
+                          "type": "string",
+                          "example": "Jl. Kalimantan No. 37, Jember"
+                        },
+                        "latitude": {
+                          "type": "string",
+                          "example": "-8.156789"
+                        },
+                        "longitude": {
+                          "type": "string",
+                          "example": "113.712345"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -222,14 +321,14 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": ["foto"],
                 "properties": {
                   "foto": {
                     "type": "string",
                     "format": "binary",
                     "description": "File gambar profil baru (jpg/png)"
                   }
-                },
-                "required": ["foto"]
+                }
               }
             }
           }
@@ -239,11 +338,23 @@
             "description": "Foto profil berhasil diperbarui",
             "content": {
               "application/json": {
-                "example": {
-                  "status": "success",
-                  "message": "Foto profil berhasil diperbarui",
-                  "data": {
-                    "foto": "https://res.cloudinary.com/dbhycng5p/image/upload/v1778269675/ambilin/avatars/user_12.png"
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "message": {
+                      "type": "string",
+                      "example": "Foto profil berhasil diperbarui"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "foto": {
+                          "type": "string",
+                          "example": "https://res.cloudinary.com/dbhycng5p/image/upload/v1778269675/ambilin/avatars/user_12.png"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -272,7 +383,23 @@
           }
         ],
         "responses": {
-          "200": { "description": "Berhasil mendapatkan daftar akun" },
+          "200": {
+            "description": "Berhasil mendapatkan daftar akun",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/User" }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized - Token tidak dikirim atau expired"
           },
@@ -289,6 +416,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["id_role", "nama", "email", "password"],
                 "properties": {
                   "id_role": {
                     "type": "integer",
@@ -302,8 +430,7 @@
                     "example": "0812345678"
                   },
                   "password": { "type": "string", "example": "password123" }
-                },
-                "required": ["id_role", "nama", "email", "password"]
+                }
               }
             }
           }
@@ -337,6 +464,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["nama", "email", "nomor_telepon"],
                 "properties": {
                   "nama": { "type": "string", "example": "Driver Jono Edit" },
                   "email": {
@@ -344,8 +472,7 @@
                     "example": "jono_baru@example.com"
                   },
                   "nomor_telepon": { "type": "string", "example": "0855667788" }
-                },
-                "required": ["nama", "email", "nomor_telepon"]
+                }
               }
             }
           }
@@ -375,14 +502,14 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["id_role"],
                 "properties": {
                   "id_role": {
                     "type": "integer",
                     "description": "ID Role user saat ini (2/3)",
                     "example": 2
                   }
-                },
-                "required": ["id_role"]
+                }
               }
             }
           }
@@ -407,6 +534,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": ["alamat", "foto"],
                 "properties": {
                   "alamat": {
                     "type": "string",
@@ -419,8 +547,7 @@
                     "format": "binary",
                     "description": "File gambar sampah (jpg/png)"
                   }
-                },
-                "required": ["alamat", "foto"]
+                }
               }
             }
           }
@@ -449,6 +576,132 @@
             "description": "Forbidden - Hanya role Customer yang diperbolehkan"
           },
           "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/api/jenis-sampah": {
+      "get": {
+        "summary": "Mendapatkan daftar semua jenis sampah yang aktif (Public / Tanpa Token)",
+        "tags": ["Jenis Sampah"],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil data jenis sampah",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "message": {
+                      "type": "string",
+                      "example": "Berhasil mengambil semua jenis sampah"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/JenisSampah" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Menambahkan jenis sampah baru (Khusus Admin)",
+        "tags": ["Jenis Sampah"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nama", "poin_per_kg"],
+                "properties": {
+                  "nama": { "type": "string", "example": "Kardus Bekas" },
+                  "poin_per_kg": { "type": "integer", "example": 700 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Berhasil menambahkan jenis sampah baru" },
+          "400": { "description": "Nama dan poin per kg wajib diisi" },
+          "401": { "description": "Unauthorized - Token tidak valid" },
+          "403": { "description": "Forbidden - Khusus Admin" }
+        }
+      }
+    },
+    "/api/jenis-sampah/{id_jenis_sampah}": {
+      "put": {
+        "summary": "Memperbarui data jenis sampah (Khusus Admin)",
+        "tags": ["Jenis Sampah"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id_jenis_sampah",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID Jenis sampah yang akan diubah"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nama", "poin_per_kg"],
+                "properties": {
+                  "nama": {
+                    "type": "string",
+                    "example": "Kardus Bekas Premium"
+                  },
+                  "poin_per_kg": { "type": "integer", "example": 850 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Berhasil memperbarui data jenis sampah" },
+          "400": { "description": "Input data tidak lengkap" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Jenis sampah tidak ditemukan" }
+        }
+      },
+      "delete": {
+        "summary": "Menghapus jenis sampah secara Soft Delete (Khusus Admin)",
+        "tags": ["Jenis Sampah"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id_jenis_sampah",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID Jenis sampah yang akan di-soft delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil menghapus jenis sampah (Soft Delete)"
+          },
+          "401": { "description": "Unauthorized" },
+          "404": {
+            "description": "Jenis sampah tidak ditemukan atau sudah dihapus"
+          }
         }
       }
     }
