@@ -4,13 +4,20 @@ services:
     image: mysql:8.0
     container_name: ambilin-db
     restart: always
+    command: --innodb-buffer-pool-size=64M --innodb-log-buffer-size=16M
     environment:
+      # Password untuk root tetap kita pasang
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_ROOT_HOST: '%'
+      
+      # TAMBAHKAN DUA BARIS INI: Memaksa Docker membuat user biasa yang kamu inginkan
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ambilin_mysql_data:/var/lib/mysql
     networks:
       - ambilin-network
 
