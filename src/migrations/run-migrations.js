@@ -6,6 +6,26 @@ const db = require("../config/dbConf");
 async function runMigrations() {
   console.log("=== MEMULAI MIGRASI DATABASE ===");
 
+  // Mekanisme retry untuk menunggu database siap (sangat berguna di Docker/VPS)
+  let retries = 10;
+  const delay = 3000; // 3 detik
+
+  while (retries > 0) {
+    try {
+      // Test koneksi sederhana
+      await db.query("SELECT 1");
+      break; // Sukses terhubung, keluar dari loop retry
+    } catch (err) {
+      retries -= 1;
+      if (retries === 0) {
+        console.error("❌ Gagal terhubung ke database setelah beberapa kali percobaan.");
+        throw err;
+      }
+      console.log(`Database belum siap. Mencoba menghubungkan kembali dalam ${delay / 1000} detik... (Sisa percobaan: ${retries})`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
   try {
     // 1. Buat tabel migrations metadata jika belum ada
     await db.query(`
