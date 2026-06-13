@@ -108,7 +108,7 @@ const manajemenAkun = {
 
     return {
       id_user: id_user,
-      id_ekstensi: id,
+      id_eksistensi: id,
       is_aktif: false,
     };
   },

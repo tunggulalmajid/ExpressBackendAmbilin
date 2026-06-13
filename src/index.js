@@ -5,6 +5,7 @@ const morgan = require("morgan"); // 1. Import morgan
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./config/swagger.json");
 require("dotenv").config();
+const { runMigrations } = require("./migrations/run-migrations");
 
 const authRoutes = require("./routes/authRoutes");
 const setorRoutes = require("./routes/setorRoutes");
@@ -48,9 +49,18 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("======================================================");
-  console.log(`Server Berjalan pada port ${PORT}`);
-  console.log(`Dokumentasi Swagger http://localhost:${PORT}/api-docs`);
-  console.log("======================================================");
-});
+
+// Run migrations first, then start the server
+runMigrations()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log("======================================================");
+      console.log(`Server Berjalan pada port ${PORT}`);
+      console.log(`Dokumentasi Swagger http://localhost:${PORT}/api-docs`);
+      console.log("======================================================");
+    });
+  })
+  .catch((err) => {
+    console.error("Gagal menjalankan migrasi database. Server tidak dapat dinyalakan:", err);
+    process.exit(1);
+  });
