@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const response = require("../utils/responseHelper");
+const db = require("../config/dbConf");
+const https = require("https");
 require("dotenv").config();
 
 const AuthController = {
@@ -94,10 +96,10 @@ const AuthController = {
         },
         customer: customer
           ? {
-              id_customer: customer.id_customer,
-              poin: customer.poin,
-              is_member: customer.is_member,
-            }
+            id_customer: customer.id_customer,
+            poin: customer.poin,
+            is_member: customer.is_member,
+          }
           : null,
       };
 
@@ -159,6 +161,181 @@ const AuthController = {
       return response.success(res, "Logout berhasil", null, 200);
     } catch (error) {
       console.error(error);
+      return response.error(res, "Terjadi kesalahan pada server", 500);
+    }
+  },
+
+  googleLogin: async (req, res) => {
+    try {
+      const { idToken } = req.body;
+      if (!idToken) {
+        return response.error(res, "ID Token Firebase wajib dikirim", 400);
+      }
+
+      // 1. Decode token to get 'kid'
+      const decoded = jwt.decode(idToken, { complete: true });
+      if (!decoded || !decoded.header || !decoded.header.kid) {
+        return response.error(res, "Format ID Token Firebase tidak valid", 400);
+      }
+      const kid = decoded.header.kid;
+
+      // 2. Fetch Google's public certificates for Firebase
+      const getGoogleCerts = () => {
+        return new Promise((resolve, reject) => {
+          https.get("https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com", (apiRes) => {
+            let data = "";
+            apiRes.on("data", (chunk) => { data += chunk; });
+            apiRes.on("end", () => {
+              try {
+                resolve(JSON.parse(data));
+              } catch (e) {
+                reject(e);
+              }
+            });
+          }).on("error", (e) => { reject(e); });
+        });
+      };
+
+      const certs = await getGoogleCerts();
+      const cert = certs[kid];
+      if (!cert) {
+        return response.error(res, "Sertifikat publik Google tidak cocok dengan token", 400);
+      }
+
+      // 3. Verify JWT with certificates
+      const projectId = process.env.FIREBASE_PROJECT_ID;
+      if (!projectId) {
+        return response.error(res, "Konfigurasi FIREBASE_PROJECT_ID belum diset di server", 500);
+      }
+
+      let payload;
+      try {
+        payload = jwt.verify(idToken, cert, {
+          audience: projectId,
+          issuer: `https://securetoken.google.com/${projectId}`,
+          algorithms: ["RS256"]
+        });
+      } catch (err) {
+        console.error("Firebase ID Token verification failed:", err);
+        return response.error(res, "Firebase ID Token tidak valid atau kadaluarsa", 401);
+      }
+
+      const email = payload.email;
+      const nama = payload.name || email.split("@")[0];
+      const foto = payload.picture || null;
+
+      if (!email) {
+        return response.error(res, "Email tidak ditemukan di token Google", 400);
+      }
+
+      // 4. Cari atau Buat User
+      let user = await User.findByEmail(email);
+      let isNewUser = false;
+
+      if (!user) {
+        // REGISTER USER BARU VIA GOOGLE
+        isNewUser = true;
+        const salt = await bcrypt.genSalt(10);
+        // Generate random secure password since they log in via Google
+        const randomPassword = Math.random().toString(36) + Date.now().toString();
+        const hashedPassword = await bcrypt.hash(randomPassword, salt);
+
+        user = await User.create({
+          nama,
+          email,
+          password: hashedPassword,
+          id_role: 3 // Default Customer
+        });
+
+        // Simpan avatar Google jika tersedia
+        if (foto) {
+          await User.updateProfilePhoto(user.id_user, foto);
+        }
+
+        // Buat profile customer
+        await User.createCustomerProfile(user.id_user);
+      }
+
+      // 5. GENERATE BACKEND TOKENS
+      const jwtPayload = { id_user: user.id_user, id_role: user.id_role };
+      const accessToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+        expiresIn: "2d",
+      });
+      const refreshToken = jwt.sign(jwtPayload, process.env.JWT_REFRESH_SECRET, {
+        expiresIn: "7d",
+      });
+
+      await User.updateRefreshToken(user.id_user, refreshToken);
+      const customer = await User.findCustomerByIdUser(user.id_user);
+
+      const responseData = {
+        accessToken,
+        refreshToken,
+        data: {
+          user: {
+            id_user: user.id_user,
+            nama: user.nama,
+            email: user.email,
+            id_role: user.id_role,
+          },
+          customer: customer
+            ? {
+              id_customer: customer.id_customer,
+              poin: customer.poin,
+              is_member: customer.is_member,
+            }
+            : null,
+          isNewUser
+        }
+
+      };
+
+      return response.success(res, isNewUser ? "Registrasi & Login Google berhasil" : "Login Google berhasil", responseData, 200);
+    } catch (error) {
+      console.error("Error googleLogin:", error);
+      return response.error(res, "Terjadi kesalahan pada server", 500);
+    }
+  },
+
+  updatePassword: async (req, res) => {
+    try {
+      const { password_lama, password_baru, konfirmasi_password } = req.body;
+      const id_user = req.user.id_user;
+
+      if (!password_lama || !password_baru || !konfirmasi_password) {
+        return response.error(res, "Semua field sandi wajib diisi", 400);
+      }
+
+      if (password_baru !== konfirmasi_password) {
+        return response.error(res, "Konfirmasi password baru tidak cocok", 400);
+      }
+
+      if (password_baru.length < 6) {
+        return response.error(res, "Password baru minimal 6 karakter", 400);
+      }
+
+      // Ambil user untuk mendapatkan password ter-hash saat ini
+      const user = await User.findById(id_user);
+      if (!user) {
+        return response.error(res, "User tidak ditemukan", 404);
+      }
+
+      // Verifikasi password lama
+      const isMatch = await bcrypt.compare(password_lama, user.password);
+      if (!isMatch) {
+        return response.error(res, "Password lama salah", 400);
+      }
+
+      // Hash password baru
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password_baru, salt);
+
+      // Simpan password baru ke database
+      await db.query("UPDATE user SET password = ? WHERE id_user = ?", [hashedPassword, id_user]);
+
+      return response.success(res, "Password berhasil diperbarui", null, 200);
+    } catch (error) {
+      console.error("Error updatePassword:", error);
       return response.error(res, "Terjadi kesalahan pada server", 500);
     }
   },

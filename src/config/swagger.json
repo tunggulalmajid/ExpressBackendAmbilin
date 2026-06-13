@@ -27,19 +27,43 @@
       "User": {
         "type": "object",
         "properties": {
-          "id_user": { "type": "integer", "example": 12 },
-          "nama": { "type": "string", "example": "Budi Santoso" },
-          "email": { "type": "string", "example": "budi@gmail.com" },
-          "id_role": { "type": "integer", "example": 3 }
+          "id_user": {
+            "type": "integer",
+            "example": 12
+          },
+          "nama": {
+            "type": "string",
+            "example": "Budi Santoso"
+          },
+          "email": {
+            "type": "string",
+            "example": "budi@gmail.com"
+          },
+          "id_role": {
+            "type": "integer",
+            "example": 3
+          }
         }
       },
       "Profile": {
         "type": "object",
         "properties": {
-          "id_user": { "type": "integer", "example": 12 },
-          "nama": { "type": "string", "example": "Budi Santoso" },
-          "email": { "type": "string", "example": "budi@gmail.com" },
-          "id_role": { "type": "integer", "example": 3 },
+          "id_user": {
+            "type": "integer",
+            "example": 12
+          },
+          "nama": {
+            "type": "string",
+            "example": "Budi Santoso"
+          },
+          "email": {
+            "type": "string",
+            "example": "budi@gmail.com"
+          },
+          "id_role": {
+            "type": "integer",
+            "example": 3
+          },
           "foto": {
             "type": "string",
             "example": "https://res.cloudinary.com/dbhycng5p/image/upload/v1/profile.jpg"
@@ -48,16 +72,37 @@
             "type": "string",
             "example": "Jl. Mastrip No. 164, Jember"
           },
-          "nomor_telepon": { "type": "string", "example": "081234567890" },
-          "latitude": { "type": "string", "example": "-8.123456" },
-          "longitude": { "type": "string", "example": "113.123456" },
+          "nomor_telepon": {
+            "type": "string",
+            "example": "081234567890"
+          },
+          "latitude": {
+            "type": "string",
+            "example": "-8.123456"
+          },
+          "longitude": {
+            "type": "string",
+            "example": "113.123456"
+          },
           "customer_profile": {
             "type": "object",
             "properties": {
-              "id_customer": { "type": "integer", "example": 2 },
-              "poin": { "type": "integer", "example": 150 },
-              "is_member": { "type": "boolean", "example": false },
-              "is_aktif": { "type": "boolean", "example": true },
+              "id_customer": {
+                "type": "integer",
+                "example": 2
+              },
+              "poin": {
+                "type": "integer",
+                "example": 150
+              },
+              "is_member": {
+                "type": "boolean",
+                "example": false
+              },
+              "is_aktif": {
+                "type": "boolean",
+                "example": true
+              },
               "expired_member_date": {
                 "type": "string",
                 "format": "date-time",
@@ -70,12 +115,27 @@
       },
       "JenisSampah": {
         "type": "object",
-        "required": ["nama", "poin_per_kg"],
+        "required": [
+          "nama",
+          "poin_per_kg"
+        ],
         "properties": {
-          "id_jenis_sampah": { "type": "integer", "example": 1 },
-          "nama": { "type": "string", "example": "Plastik PET" },
-          "poin_per_kg": { "type": "integer", "example": 500 },
-          "is_delete": { "type": "boolean", "example": false },
+          "id_jenis_sampah": {
+            "type": "integer",
+            "example": 1
+          },
+          "nama": {
+            "type": "string",
+            "example": "Plastik PET"
+          },
+          "poin_per_kg": {
+            "type": "integer",
+            "example": 500
+          },
+          "is_delete": {
+            "type": "boolean",
+            "example": false
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -91,7 +151,10 @@
       "ErrorResponse": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "example": "error" },
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
           "message": {
             "type": "string",
             "example": "Terjadi kesalahan pada server"
@@ -104,25 +167,42 @@
     "/api/auth/register": {
       "post": {
         "summary": "Registrasi user baru",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["nama", "email", "password"],
+                "required": [
+                  "nama",
+                  "email",
+                  "password"
+                ],
                 "properties": {
-                  "nama": { "type": "string", "example": "Tunggul" },
-                  "email": { "type": "string", "example": "tunggul@gmail.com" },
-                  "password": { "type": "string", "example": "password123" }
+                  "nama": {
+                    "type": "string",
+                    "example": "Tunggul"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "tunggul@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "Registrasi berhasil" },
+          "201": {
+            "description": "Registrasi berhasil"
+          },
           "400": {
             "description": "Input tidak valid atau Email sudah terdaftar"
           }
@@ -132,40 +212,61 @@
     "/api/auth/login": {
       "post": {
         "summary": "Login user",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["email", "password"],
+                "required": [
+                  "email",
+                  "password"
+                ],
                 "properties": {
-                  "email": { "type": "string", "example": "tunggul@gmail.com" },
-                  "password": { "type": "string", "example": "password123" }
+                  "email": {
+                    "type": "string",
+                    "example": "tunggul@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Login berhasil" },
-          "400": { "description": "Password salah" },
-          "404": { "description": "User tidak ditemukan" }
+          "200": {
+            "description": "Login berhasil"
+          },
+          "400": {
+            "description": "Password salah"
+          },
+          "404": {
+            "description": "User tidak ditemukan"
+          }
         }
       }
     },
     "/api/auth/refresh": {
       "post": {
         "summary": "Refresh Access Token",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["token"],
+                "required": [
+                  "token"
+                ],
                 "properties": {
                   "token": {
                     "type": "string",
@@ -177,28 +278,201 @@
           }
         },
         "responses": {
-          "200": { "description": "Refresh token berhasil" },
-          "401": { "description": "Refresh token dibutuhkan" },
-          "403": { "description": "Refresh token tidak valid atau kadaluarsa" }
+          "200": {
+            "description": "Refresh token berhasil"
+          },
+          "401": {
+            "description": "Refresh token dibutuhkan"
+          },
+          "403": {
+            "description": "Refresh token tidak valid atau kadaluarsa"
+          }
+        }
+      }
+    },
+    "/api/auth/google": {
+      "post": {
+        "summary": "Login atau Register otomatis menggunakan Firebase ID Token (Google Sign-In)",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "idToken"
+                ],
+                "properties": {
+                  "idToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login / Registrasi berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login Google berhasil"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "user": {
+                              "$ref": "#/components/schemas/User"
+                            },
+                            "customer": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "id_customer": {
+                                  "type": "integer",
+                                  "example": 2
+                                },
+                                "poin": {
+                                  "type": "integer",
+                                  "example": 0
+                                },
+                                "is_member": {
+                                  "type": "boolean",
+                                  "example": false
+                                }
+                              }
+                            },
+                            "isNewUser": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID Token tidak valid"
+          },
+          "401": {
+            "description": "Otentikasi Firebase gagal"
+          }
+        }
+      }
+    },
+    "/api/auth/update-password": {
+      "put": {
+        "summary": "Memperbarui password user dengan memverifikasi password lama (Memerlukan Token)",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "password_lama",
+                  "password_baru",
+                  "konfirmasi_password"
+                ],
+                "properties": {
+                  "password_lama": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "password_baru": {
+                    "type": "string",
+                    "example": "passwordbaru456"
+                  },
+                  "konfirmasi_password": {
+                    "type": "string",
+                    "example": "passwordbaru456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password berhasil diperbarui"
+          },
+          "400": {
+            "description": "Konfirmasi password tidak cocok / password lama salah"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
     },
     "/api/auth/logout": {
       "delete": {
         "summary": "Logout user",
-        "tags": ["Auth"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Logout berhasil" },
-          "401": { "description": "Akses ditolak, token tidak ditemukan" }
+          "200": {
+            "description": "Logout berhasil"
+          },
+          "401": {
+            "description": "Akses ditolak, token tidak ditemukan"
+          }
         }
       }
     },
     "/api/profile": {
       "get": {
         "summary": "Mendapatkan profil data lengkap berdasarkan user yang login",
-        "tags": ["Profile"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Berhasil Mendapatkan Data Profil",
@@ -207,12 +481,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "example": "success" },
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
                     "message": {
                       "type": "string",
                       "example": "Berhasil mendapatkan data profil"
                     },
-                    "data": { "$ref": "#/components/schemas/Profile" }
+                    "data": {
+                      "$ref": "#/components/schemas/Profile"
+                    }
                   }
                 }
               }
@@ -221,12 +500,16 @@
           "401": {
             "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
           },
-          "404": { "description": "Not Found - User tidak ditemukan" },
+          "404": {
+            "description": "Not Found - User tidak ditemukan"
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           }
@@ -234,8 +517,14 @@
       },
       "put": {
         "summary": "Memperbarui data profil user (Nama, No Telp, Alamat, Koordinat)",
-        "tags": ["Profile"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -243,7 +532,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "nama": { "type": "string", "example": "Budi Santoso Edit" },
+                  "nama": {
+                    "type": "string",
+                    "example": "Budi Santoso Edit"
+                  },
                   "nomor_telepon": {
                     "type": "string",
                     "example": "081222333444"
@@ -252,8 +544,14 @@
                     "type": "string",
                     "example": "Jl. Kalimantan No. 37, Jember"
                   },
-                  "latitude": { "type": "string", "example": "-8.156789" },
-                  "longitude": { "type": "string", "example": "113.712345" }
+                  "latitude": {
+                    "type": "string",
+                    "example": "-8.156789"
+                  },
+                  "longitude": {
+                    "type": "string",
+                    "example": "113.712345"
+                  }
                 }
               }
             }
@@ -267,7 +565,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "example": "success" },
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
                     "message": {
                       "type": "string",
                       "example": "Profil berhasil diperbarui"
@@ -305,23 +606,35 @@
           "401": {
             "description": "Unauthorized - Token tidak dikirim atau sudah kadaluarsa"
           },
-          "404": { "description": "Not Found - User tidak ditemukan" },
-          "500": { "description": "Internal Server Error" }
+          "404": {
+            "description": "Not Found - User tidak ditemukan"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
     "/api/profile/photo": {
       "put": {
         "summary": "Memperbarui/Mengganti foto profil user (Khusus Unggah Gambar)",
-        "tags": ["Profile"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["foto"],
+                "required": [
+                  "foto"
+                ],
                 "properties": {
                   "foto": {
                     "type": "string",
@@ -341,7 +654,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "example": "success" },
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
                     "message": {
                       "type": "string",
                       "example": "Foto profil berhasil diperbarui"
@@ -360,26 +676,39 @@
               }
             }
           },
-          "400": { "description": "File foto wajib diunggah" },
+          "400": {
+            "description": "File foto wajib diunggah"
+          },
           "401": {
             "description": "Unauthorized - Token tidak ditemukan atau expired"
           },
-          "500": { "description": "Internal Server Error" }
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
     "/api/manajemen-akun": {
       "get": {
         "summary": "Mendapatkan daftar seluruh akun (Bisa difilter lewat query role)",
-        "tags": ["Admin (Manajemen Akun)"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Admin (Manajemen Akun)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "role",
             "in": "query",
             "description": "Saring berdasarkan ID Role: 2 (Petugas) atau 3 (Customer)",
             "required": false,
-            "schema": { "type": "integer", "example": 2 }
+            "schema": {
+              "type": "integer",
+              "example": 2
+            }
           }
         ],
         "responses": {
@@ -390,10 +719,15 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "example": "success" },
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
                     "data": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/User" }
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
                     }
                   }
                 }
@@ -403,58 +737,92 @@
           "401": {
             "description": "Unauthorized - Token tidak dikirim atau expired"
           },
-          "403": { "description": "Forbidden - Khusus Admin Role 1" }
+          "403": {
+            "description": "Forbidden - Khusus Admin Role 1"
+          }
         }
       },
       "post": {
         "summary": "Membuat akun Petugas atau Customer baru langsung dari Panel Admin",
-        "tags": ["Admin (Manajemen Akun)"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Admin (Manajemen Akun)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["id_role", "nama", "email", "password"],
+                "required": [
+                  "id_role",
+                  "nama",
+                  "email",
+                  "password"
+                ],
                 "properties": {
                   "id_role": {
                     "type": "integer",
                     "description": "2 untuk Petugas, 3 untuk Customer",
                     "example": 2
                   },
-                  "nama": { "type": "string", "example": "Driver Jono" },
-                  "email": { "type": "string", "example": "jono@example.com" },
+                  "nama": {
+                    "type": "string",
+                    "example": "Driver Jono"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "jono@example.com"
+                  },
                   "nomor_telepon": {
                     "type": "string",
                     "example": "0812345678"
                   },
-                  "password": { "type": "string", "example": "password123" }
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "Akun baru berhasil dibuat oleh Admin" },
+          "201": {
+            "description": "Akun baru berhasil dibuat oleh Admin"
+          },
           "400": {
             "description": "Email sudah terdaftar atau input tidak lengkap"
           },
-          "401": { "description": "Unauthorized" }
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
     },
     "/api/manajemen-akun/{id_user}": {
       "put": {
         "summary": "Memperbarui data dasar user (Nama, Email, Telepon) lewat panel Admin",
-        "tags": ["Admin (Manajemen Akun)"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Admin (Manajemen Akun)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id_user",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" },
+            "schema": {
+              "type": "integer"
+            },
             "description": "ID User yang akan dimodifikasi"
           }
         ],
@@ -464,35 +832,59 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["nama", "email", "nomor_telepon"],
+                "required": [
+                  "nama",
+                  "email",
+                  "nomor_telepon"
+                ],
                 "properties": {
-                  "nama": { "type": "string", "example": "Driver Jono Edit" },
+                  "nama": {
+                    "type": "string",
+                    "example": "Driver Jono Edit"
+                  },
                   "email": {
                     "type": "string",
                     "example": "jono_baru@example.com"
                   },
-                  "nomor_telepon": { "type": "string", "example": "0855667788" }
+                  "nomor_telepon": {
+                    "type": "string",
+                    "example": "0855667788"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Data user berhasil diperbarui" },
-          "400": { "description": "Input data tidak lengkap" },
-          "401": { "description": "Unauthorized" }
+          "200": {
+            "description": "Data user berhasil diperbarui"
+          },
+          "400": {
+            "description": "Input data tidak lengkap"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       },
       "delete": {
         "summary": "Menonaktifkan akun secara soft delete (Mengubah status is_aktif menjadi 0)",
-        "tags": ["Admin (Manajemen Akun)"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Admin (Manajemen Akun)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id_user",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" },
+            "schema": {
+              "type": "integer"
+            },
             "description": "ID User yang akan dinonaktifkan"
           }
         ],
@@ -502,7 +894,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["id_role"],
+                "required": [
+                  "id_role"
+                ],
                 "properties": {
                   "id_role": {
                     "type": "integer",
@@ -515,33 +909,52 @@
           }
         },
         "responses": {
-          "200": { "description": "Akun berhasil dinonaktifkan (Soft Delete)" },
+          "200": {
+            "description": "Akun berhasil dinonaktifkan (Soft Delete)"
+          },
           "400": {
             "description": "id_role wajib disertakan / data tidak ditemukan"
           },
-          "412": { "description": "Precondition Failed" }
+          "412": {
+            "description": "Precondition Failed"
+          }
         }
       }
     },
     "/api/setor": {
       "post": {
         "summary": "Mengajukan setoran sampah baru (Khusus Customer)",
-        "tags": ["Setor Sampah"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Setor Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["alamat", "foto"],
+                "required": [
+                  "alamat",
+                  "foto"
+                ],
                 "properties": {
                   "alamat": {
                     "type": "string",
                     "example": "Jl. Mastrip No. 164, Jember"
                   },
-                  "latitude": { "type": "string", "example": "-8.123456" },
-                  "longitude": { "type": "string", "example": "113.123456" },
+                  "latitude": {
+                    "type": "string",
+                    "example": "-8.123456"
+                  },
+                  "longitude": {
+                    "type": "string",
+                    "example": "113.123456"
+                  },
                   "foto": {
                     "type": "string",
                     "format": "binary",
@@ -571,18 +984,24 @@
           "400": {
             "description": "Foto wajib diunggah atau input tidak valid"
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
             "description": "Forbidden - Hanya role Customer yang diperbolehkan"
           },
-          "500": { "description": "Internal Server Error" }
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
     "/api/jenis-sampah": {
       "get": {
         "summary": "Mendapatkan daftar semua jenis sampah yang aktif (Public / Tanpa Token)",
-        "tags": ["Jenis Sampah"],
+        "tags": [
+          "Jenis Sampah"
+        ],
         "responses": {
           "200": {
             "description": "Berhasil mengambil data jenis sampah",
@@ -591,14 +1010,19 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "example": "success" },
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
                     "message": {
                       "type": "string",
                       "example": "Berhasil mengambil semua jenis sampah"
                     },
                     "data": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/JenisSampah" }
+                      "items": {
+                        "$ref": "#/components/schemas/JenisSampah"
+                      }
                     }
                   }
                 }
@@ -609,7 +1033,9 @@
             "description": "Internal Server Error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           }
@@ -617,42 +1043,73 @@
       },
       "post": {
         "summary": "Menambahkan jenis sampah baru (Khusus Admin)",
-        "tags": ["Jenis Sampah"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Jenis Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["nama", "poin_per_kg"],
+                "required": [
+                  "nama",
+                  "poin_per_kg"
+                ],
                 "properties": {
-                  "nama": { "type": "string", "example": "Kardus Bekas" },
-                  "poin_per_kg": { "type": "integer", "example": 700 }
+                  "nama": {
+                    "type": "string",
+                    "example": "Kardus Bekas"
+                  },
+                  "poin_per_kg": {
+                    "type": "integer",
+                    "example": 700
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "Berhasil menambahkan jenis sampah baru" },
-          "400": { "description": "Nama dan poin per kg wajib diisi" },
-          "401": { "description": "Unauthorized - Token tidak valid" },
-          "403": { "description": "Forbidden - Khusus Admin" }
+          "201": {
+            "description": "Berhasil menambahkan jenis sampah baru"
+          },
+          "400": {
+            "description": "Nama dan poin per kg wajib diisi"
+          },
+          "401": {
+            "description": "Unauthorized - Token tidak valid"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Admin"
+          }
         }
       }
     },
     "/api/jenis-sampah/{id_jenis_sampah}": {
       "put": {
         "summary": "Memperbarui data jenis sampah (Khusus Admin)",
-        "tags": ["Jenis Sampah"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Jenis Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id_jenis_sampah",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" },
+            "schema": {
+              "type": "integer"
+            },
             "description": "ID Jenis sampah yang akan diubah"
           }
         ],
@@ -662,35 +1119,57 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["nama", "poin_per_kg"],
+                "required": [
+                  "nama",
+                  "poin_per_kg"
+                ],
                 "properties": {
                   "nama": {
                     "type": "string",
                     "example": "Kardus Bekas Premium"
                   },
-                  "poin_per_kg": { "type": "integer", "example": 850 }
+                  "poin_per_kg": {
+                    "type": "integer",
+                    "example": 850
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Berhasil memperbarui data jenis sampah" },
-          "400": { "description": "Input data tidak lengkap" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Jenis sampah tidak ditemukan" }
+          "200": {
+            "description": "Berhasil memperbarui data jenis sampah"
+          },
+          "400": {
+            "description": "Input data tidak lengkap"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Jenis sampah tidak ditemukan"
+          }
         }
       },
       "delete": {
         "summary": "Menghapus jenis sampah secara Soft Delete (Khusus Admin)",
-        "tags": ["Jenis Sampah"],
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Jenis Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id_jenis_sampah",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" },
+            "schema": {
+              "type": "integer"
+            },
             "description": "ID Jenis sampah yang akan di-soft delete"
           }
         ],
@@ -698,9 +1177,658 @@
           "200": {
             "description": "Berhasil menghapus jenis sampah (Soft Delete)"
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Jenis sampah tidak ditemukan atau sudah dihapus"
+          }
+        }
+      }
+    },
+    "/api/subscriptions": {
+      "get": {
+        "summary": "Mendapatkan daftar paket subscription",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil paket subscription"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Admin membuat paket subscription baru (Khusus Admin)",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nama",
+                  "harga",
+                  "poin"
+                ],
+                "properties": {
+                  "nama": {
+                    "type": "string",
+                    "example": "Gold Membership 30 Hari"
+                  },
+                  "harga": {
+                    "type": "integer",
+                    "example": 150000
+                  },
+                  "poin": {
+                    "type": "integer",
+                    "example": 500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Berhasil membuat paket subscription baru"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Admin"
+          }
+        }
+      }
+    },
+    "/api/subscriptions/purchase": {
+      "post": {
+        "summary": "Customer mengajukan pembelian paket subscription (Khusus Customer)",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_subscribtion",
+                  "metode_pembayaran",
+                  "bukti_pembayaran"
+                ],
+                "properties": {
+                  "id_subscribtion": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "metode_pembayaran": {
+                    "type": "string",
+                    "example": "Transfer Bank Mandiri"
+                  },
+                  "bukti_pembayaran": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File gambar bukti transfer (jpg/png)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Permintaan pembelian berhasil diajukan"
+          },
+          "400": {
+            "description": "Bukti pembayaran wajib diunggah atau input tidak valid"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/subscriptions/transactions": {
+      "get": {
+        "summary": "Admin melihat transaksi masuk (Khusus Admin)",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Saring berdasarkan status: menunggu, berhasil, gagal",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "menunggu"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil data transaksi"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Admin"
+          }
+        }
+      }
+    },
+    "/api/subscriptions/transactions/{id}/confirm": {
+      "put": {
+        "summary": "Admin mengonfirmasi/memverifikasi transaksi (Khusus Admin)",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Transaksi yang akan dikonfirmasi"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "berhasil",
+                      "gagal"
+                    ],
+                    "example": "berhasil"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transaksi berhasil dikonfirmasi"
+          },
+          "400": {
+            "description": "Status konfirmasi tidak valid"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Transaksi tidak ditemukan"
+          }
+        }
+      }
+    },
+    "/api/articles/categories": {
+      "get": {
+        "summary": "Mendapatkan daftar kategori artikel",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil kategori artikel"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Admin membuat kategori artikel baru (Khusus Admin)",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nama"
+                ],
+                "properties": {
+                  "nama": {
+                    "type": "string",
+                    "example": "Edukasi Daur Ulang"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Berhasil menambahkan kategori artikel baru"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/articles": {
+      "get": {
+        "summary": "Mendapatkan daftar semua artikel aktif",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil daftar artikel"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Admin mempublikasikan artikel baru (Khusus Admin)",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_jenis_artikel",
+                  "judul",
+                  "isi",
+                  "foto_thumbnail"
+                ],
+                "properties": {
+                  "id_jenis_artikel": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "judul": {
+                    "type": "string",
+                    "example": "Cara Memilah Sampah dengan Benar"
+                  },
+                  "isi": {
+                    "type": "string",
+                    "example": "Langkah pertama adalah..."
+                  },
+                  "foto_thumbnail": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File gambar thumbnail (jpg/png)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Berhasil menambahkan artikel baru"
+          },
+          "400": {
+            "description": "Input tidak valid atau file thumbnail belum diunggah"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/articles/{id}": {
+      "get": {
+        "summary": "Mendapatkan detail satu artikel berdasarkan ID",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Artikel yang ingin dibaca"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil detail artikel"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Artikel tidak ditemukan"
+          }
+        }
+      },
+      "put": {
+        "summary": "Admin memperbarui data artikel (Khusus Admin)",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Artikel yang akan diupdate"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_jenis_artikel",
+                  "judul",
+                  "isi"
+                ],
+                "properties": {
+                  "id_jenis_artikel": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "judul": {
+                    "type": "string",
+                    "example": "Cara Memilah Sampah dengan Benar Edit"
+                  },
+                  "isi": {
+                    "type": "string",
+                    "example": "Langkah pertama yang terbaru..."
+                  },
+                  "foto_thumbnail": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File gambar thumbnail baru (Opsional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Berhasil memperbarui artikel"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Artikel atau Kategori tidak ditemukan"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Admin menghapus artikel secara soft delete (Khusus Admin)",
+        "tags": [
+          "Artikel"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Artikel yang akan dihapus"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil menghapus artikel (soft delete)"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Artikel tidak ditemukan atau sudah terhapus"
+          }
+        }
+      }
+    },
+    "/api/setor/active": {
+      "get": {
+        "summary": "Petugas melihat seluruh order penjemputan sampah aktif berstatus 'menunggu' (Khusus Petugas)",
+        "tags": [
+          "Setor Sampah (Petugas)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil order aktif"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Petugas"
+          }
+        }
+      }
+    },
+    "/api/setor/history/petugas": {
+      "get": {
+        "summary": "Petugas melihat riwayat penjemputan yang ditanganinya (Khusus Petugas)",
+        "tags": [
+          "Setor Sampah (Petugas)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil riwayat petugas"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/setor/{id}/process": {
+      "put": {
+        "summary": "Petugas mengklaim/memproses order penjemputan baru (Khusus Petugas)",
+        "tags": [
+          "Setor Sampah (Petugas)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Order setor sampah yang akan diproses"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order penjemputan berhasil diklaim"
+          },
+          "400": {
+            "description": "Order tidak dapat diproses (misal sudah diklaim petugas lain)"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/setor/{id}/complete": {
+      "put": {
+        "summary": "Petugas menyelesaikan order penjemputan, menimbang sampah, dan memberikan poin reward (Khusus Petugas)",
+        "tags": [
+          "Setor Sampah (Petugas)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Order setor sampah yang diselesaikan"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "description": "Daftar barang sampah yang ditimbang di lokasi",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id_jenis_sampah",
+                        "berat_sampah"
+                      ],
+                      "properties": {
+                        "id_jenis_sampah": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "berat_sampah": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 3.5
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order penjemputan selesai diproses dan poin telah diberikan ke customer"
+          },
+          "400": {
+            "description": "Data input timbangan tidak valid"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }

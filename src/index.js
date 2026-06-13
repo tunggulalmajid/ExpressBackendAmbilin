@@ -12,6 +12,8 @@ const setorRoutes = require("./routes/setorRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const manajemenAkunRoutes = require("./routes/manajemenAkunRoutes");
 const kategoriSampahRoutes = require("./routes/kategoriSampahRoutes");
+const subscribtionRoutes = require("./routes/subscribtionRoutes");
+const artikelRoutes = require("./routes/artikelRoutes");
 
 const app = express();
 
@@ -40,6 +42,8 @@ app.use("/api/profile", profileRoutes);
 ``;
 app.use("/api/manajemen-akun", manajemenAkunRoutes);
 app.use("/api/jenis-sampah", kategoriSampahRoutes);
+app.use("/api/subscriptions", subscribtionRoutes);
+app.use("/api/articles", artikelRoutes);
 
 app.get("/", (req, res) => {
   res.json({
