@@ -72,15 +72,27 @@ const manajemenAkunController = {
 
   getAllUsers: async (req, res) => {
     try {
-      const { role } = req.query;
-      console.log(role);
-      if (parseInt(role) != 2 && parseInt(role) != 3) {
-        return response.error(res, "Role yang anda masukkan tidak sesuai", 400);
+      const { role, page = 1, limit = 10 } = req.query;
+
+      // Jika role dimasukkan, validasi nilainya
+      if (role !== undefined && role !== "") {
+        const roleId = parseInt(role);
+        if (roleId !== 2 && roleId !== 3) {
+          return response.error(res, "Role tidak tersedia", 400);
+        }
       }
 
-      const users = await manajemenAkun.getAkun(role);
+      const parsedPage = parseInt(page) || 1;
+      const parsedLimit = parseInt(limit) || 10;
+      const offset = (parsedPage - 1) * parsedLimit;
 
-      const formattedUsers = users.map((user) => {
+      const { total, data } = await manajemenAkun.getAkun(
+        role ? parseInt(role) : null,
+        parsedLimit,
+        offset
+      );
+
+      const formattedUsers = data.map((user) => {
         const baseData = {
           id_user: user.id_user,
           nama: user.nama,
@@ -112,14 +124,62 @@ const manajemenAkunController = {
         return baseData;
       });
 
-      return response.success(
-        res,
-        "Berhasil mendapatkan daftar akun",
-        formattedUsers,
-        200,
-      );
+      return res.status(200).json({
+        status: "success",
+        message: "Berhasil mendapatkan daftar akun",
+        pagination: {
+          total_items: total,
+          total_pages: Math.ceil(total / parsedLimit),
+          current_page: parsedPage,
+          limit: parsedLimit
+        },
+        data: formattedUsers
+      });
     } catch (error) {
       console.error(error);
+      return response.error(res, "Terjadi kesalahan pada server", 500);
+    }
+  },
+
+  getAkunDetail: async (req, res) => {
+    try {
+      const { id_user } = req.params;
+      const user = await manajemenAkun.findById(id_user);
+      if (!user) {
+        return response.error(res, "Akun tidak ditemukan", 404);
+      }
+
+      const formattedUser = {
+        id_user: user.id_user,
+        nama: user.nama,
+        email: user.email,
+        nomor_telepon: user.nomor_telepon,
+        foto: user.foto,
+        alamat: user.alamat,
+        role: {
+          id_role: user.id_role,
+          nama_role: user.nama_role,
+        },
+      };
+
+      if (user.id_role === 3) {
+        formattedUser.customer_profile = {
+          id_customer: user.id_customer,
+          poin: user.poin,
+          is_member: user.is_member,
+          is_aktif: user.customer_aktif,
+          expired_member_date: user.expired_member_date,
+        };
+      } else if (user.id_role === 2) {
+        formattedUser.petugas_profile = {
+          id_petugas: user.id_petugas,
+          is_aktif: user.petugas_aktif,
+        };
+      }
+
+      return response.success(res, "Berhasil mendapatkan detail akun", formattedUser);
+    } catch (error) {
+      console.error("error getAkunDetail:", error);
       return response.error(res, "Terjadi kesalahan pada server", 500);
     }
   },

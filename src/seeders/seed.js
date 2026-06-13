@@ -5,14 +5,14 @@ const db = require("../config/dbConf");
 async function runSeed() {
   try {
     console.log("=======================================================");
-    console.log("Memulai proses seeding data untuk seluruh tabel...");
+    console.log("Memulai proses seeding data untuk seluruh tabel (ERD Baru)...");
     console.log("=======================================================");
 
     const salt = await bcrypt.genSalt(10);
     const defaultPassword = await bcrypt.hash("password123", salt);
 
     // ==========================================
-    // 0. SEEDING / VERIFIKASI ROLE
+    // 0. SEEDING / VERIFIKASI ROLE & METODE PEMBAYARAN
     // ==========================================
     await db.query(`
       INSERT INTO role (id, nama_role) VALUES 
@@ -22,6 +22,15 @@ async function runSeed() {
       ON DUPLICATE KEY UPDATE nama_role = VALUES(nama_role)
     `);
     console.log("✔ Verifikasi master data Role berhasil.");
+
+    await db.query(`
+      INSERT INTO metode_pembayaran (id_metode_pembayaran, nama, keterangan) VALUES
+      (1, 'Transfer Bank Mandiri', 'Kirim ke rekening Mandiri 142000xxxx a.n Ambilin'),
+      (2, 'Transfer Bank BCA', 'Kirim ke rekening BCA 02938xxxx a.n Ambilin'),
+      (3, 'Poin Reward', 'Pembayaran menggunakan potongan saldo poin aplikasi')
+      ON DUPLICATE KEY UPDATE nama = VALUES(nama), keterangan = VALUES(keterangan)
+    `);
+    console.log("✔ Verifikasi master data Metode Pembayaran berhasil.");
 
     // ==========================================
     // 1. SEEDING SUPER ADMIN (Role 1)
@@ -78,10 +87,11 @@ async function runSeed() {
       );
       customerUserId = customerResult.insertId;
 
-      // Masukkan ke tabel ekstensi 'customer' (poin=0, is_member=0, is_aktif=1)
+      // Masukkan ke tabel ekstensi 'customer' (poin=10000, is_member=0, is_aktif=1)
+      // Diberikan saldo poin awal 10000 untuk pengujian pembayaran poin
       await db.query(
         "INSERT INTO customer (id_user, poin, is_member, is_aktif) VALUES (?, ?, ?, ?)",
-        [customerUserId, 0, 0, 1],
+        [customerUserId, 10000, 0, 1],
       );
       console.log("✔ User Customer & Profil Customer berhasil ditambahkan.");
     } else {
@@ -100,14 +110,14 @@ async function runSeed() {
     const customerId = customers[0]?.id_customer;
 
     // ==========================================
-    // 4. SEEDING SUBSCRIPTION
+    // 4. SEEDING SUBSCRIPTION (Tanpa kolom poin)
     // ==========================================
     const [existingSubs] = await db.query("SELECT id_subscribtion FROM subscribtion LIMIT 1");
     let subId;
     if (existingSubs.length === 0) {
       const [subResult] = await db.query(
-        "INSERT INTO subscribtion (nama, harga, poin) VALUES (?, ?, ?)",
-        ["Gold Membership 30 Hari", 150000, 500]
+        "INSERT INTO subscribtion (nama, harga) VALUES (?, ?)",
+        ["Gold Membership 30 Hari", 150000]
       );
       subId = subResult.insertId;
       console.log("✔ Data Subscription berhasil ditambahkan.");
@@ -117,14 +127,14 @@ async function runSeed() {
     }
 
     // ==========================================
-    // 5. SEEDING TRANSAKSI SUBSCRIPTION
+    // 5. SEEDING TRANSAKSI SUBSCRIPTION (Dengan id_metode_pembayaran)
     // ==========================================
     const [existingTransaksi] = await db.query("SELECT id_transaksi FROM transaksi LIMIT 1");
     if (existingTransaksi.length === 0 && customerId && subId) {
       await db.query(
-        `INSERT INTO transaksi (id_customer, id_admin, id_subscribtion, bukti_pembayaran, metode_pembayaran, status, created_at, confirmed_at) 
-         VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-        [customerId, adminId || null, subId, "bukti_bayar_budi.jpg", "Transfer Bank Mandiri", "berhasil"]
+        `INSERT INTO transaksi (id_customer, id_admin, id_metode_pembayaran, id_subscribtion, bukti_pembayaran, poin_digunakan, status, created_at, confirmed_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+        [customerId, adminId || null, 1, subId, "bukti_bayar_budi.jpg", 0, "berhasil"]
       );
       console.log("✔ Data Transaksi Subscription berhasil ditambahkan.");
     } else {
@@ -151,39 +161,22 @@ async function runSeed() {
     }
 
     // ==========================================
-    // 7. SEEDING SETOR SAMPAH
+    // 7. SEEDING SETOR SAMPAH (Langsung terintegrasi)
     // ==========================================
     const [existingSetor] = await db.query("SELECT id_setor_sampah FROM setor_sampah LIMIT 1");
-    let setorId;
-    if (existingSetor.length === 0 && customerId) {
-      const [setorResult] = await db.query(
-        `INSERT INTO setor_sampah (id_petugas, id_customer, status, alamat, catatan, latitude, longitude, foto, created_at, pickup_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-        [petugasId || null, customerId, "selesai", "Jl. Mawar No. 12, Jakarta Timur", "Ditaruh di depan pagar rumah", -6.20000000, 106.81666600, "foto_sampah_budi.jpg"]
+    if (existingSetor.length === 0 && customerId && jenisSampahId) {
+      await db.query(
+        `INSERT INTO setor_sampah (id_petugas, id_customer, id_jenis_sampah, status, alamat, catatan, latitude, longitude, berat_sampah, foto, foto_bukti_penjemputan, created_at, pickup_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+        [petugasId || null, customerId, jenisSampahId, "selesai", "Jl. Mawar No. 12, Jakarta Timur", "Ditaruh di depan pagar rumah", -6.20000000, 106.81666600, 8.50, "foto_sampah_budi.jpg", "foto_bukti_jemput_petugas.jpg"]
       );
-      setorId = setorResult.insertId;
       console.log("✔ Data Setor Sampah berhasil ditambahkan.");
     } else {
-      setorId = existingSetor[0]?.id_setor_sampah;
       console.log("✔ Data Setor Sampah sudah ada. Skipping.");
     }
 
     // ==========================================
-    // 8. SEEDING DETAIL SETOR SAMPAH
-    // ==========================================
-    const [existingDetail] = await db.query("SELECT id_detail_setor_sampah FROM detail_setor_sampah LIMIT 1");
-    if (existingDetail.length === 0 && setorId && jenisSampahId) {
-      await db.query(
-        "INSERT INTO detail_setor_sampah (id_setor_sampah, id_jenis_sampah, berat_sampah, created_at) VALUES (?, ?, ?, NOW())",
-        [setorId, jenisSampahId, 5.50]
-      );
-      console.log("✔ Data Detail Setor Sampah berhasil ditambahkan.");
-    } else {
-      console.log("✔ Data Detail Setor Sampah sudah ada. Skipping.");
-    }
-
-    // ==========================================
-    // 9. SEEDING JENIS ARTIKEL
+    // 8. SEEDING JENIS ARTIKEL
     // ==========================================
     const [existingJenisArtikel] = await db.query("SELECT id_jenis_artikel FROM jenis_artikel LIMIT 1");
     let jenisArtikelId;
@@ -197,7 +190,7 @@ async function runSeed() {
     }
 
     // ==========================================
-    // 10. SEEDING ARTIKEL
+    // 9. SEEDING ARTIKEL
     // ==========================================
     const [existingArtikel] = await db.query("SELECT id_artikel FROM artikel LIMIT 1");
     if (existingArtikel.length === 0 && adminId && jenisArtikelId) {

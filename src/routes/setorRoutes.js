@@ -4,8 +4,9 @@ const SetorController = require("../controller/setorController");
 const { verifyToken, checkRole } = require("../middleware/authMiddleware");
 const uploadCloud = require("../config/cloudinaryConf");
 
-// Route: POST /api/setor
-// Hanya Customer (Role 3) yang boleh mengakses
+// == Rute untuk Customer (Role 3) ==
+
+// 1. Customer mengajukan request setor sampah baru (upload foto sampah)
 router.post(
   "/",
   verifyToken,
@@ -13,6 +14,13 @@ router.post(
   uploadCloud.single("foto"), // 'foto' adalah key yang dikirim dari Flutter
   SetorController.ajukanSetor,
 );
+
+// 2. Customer melihat riwayat setorannya sendiri
+router.get("/history/customer", verifyToken, checkRole([3]), SetorController.dapatkanRiwayatCustomer);
+
+// 3. Detail order penjemputan sampah (Bisa diakses oleh role yang terautentikasi)
+router.get("/:id", verifyToken, SetorController.dapatkanDetailSetor);
+
 
 // == Rute untuk Petugas Lapangan (Role 2) ==
 
@@ -25,7 +33,13 @@ router.get("/history/petugas", verifyToken, checkRole([2]), SetorController.dapa
 // 3. Klaim/proses penjemputan sampah
 router.put("/:id/process", verifyToken, checkRole([2]), SetorController.prosesPenjemputan);
 
-// 4. Selesaikan penjemputan sampah (input timbangan berat)
-router.put("/:id/complete", verifyToken, checkRole([2]), SetorController.selesaikanPenjemputan);
+// 4. Selesaikan penjemputan sampah (input timbangan berat & upload bukti penjemputan)
+router.put(
+  "/:id/complete", 
+  verifyToken, 
+  checkRole([2]), 
+  uploadCloud.single("foto_bukti_penjemputan"), 
+  SetorController.selesaikanPenjemputan
+);
 
 module.exports = router;

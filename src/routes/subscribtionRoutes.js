@@ -7,10 +7,16 @@ const uploadCloud = require("../config/cloudinaryConf");
 // 1. Ambil daftar paket subscription (Customer, Petugas, Admin)
 router.get("/", verifyToken, SubscribtionController.getSubscriptions);
 
-// 2. Buat paket subscription baru (Hanya Admin)
-router.post("/", verifyToken, checkRole([1]), SubscribtionController.createSubscription);
+// 2. Ambil daftar metode pembayaran (Customer, Petugas, Admin)
+router.get("/payment-methods", verifyToken, SubscribtionController.getPaymentMethods);
 
-// 3. Customer memesan paket subscription (Hanya Customer, upload bukti transfer)
+// 3. Ambil ringkasan pendapatan & member aktif (Hanya Admin)
+router.get("/summary", verifyToken, checkRole([1]), SubscribtionController.getSummary);
+
+// 4. Update paket subscription (Hanya Admin)
+router.put("/:id", verifyToken, checkRole([1]), SubscribtionController.updateSubscription);
+
+// 5. Customer memesan paket subscription (Hanya Customer, upload bukti transfer)
 router.post(
   "/purchase",
   verifyToken,
@@ -19,10 +25,10 @@ router.post(
   SubscribtionController.buySubscription
 );
 
-// 4. Lihat transaksi masuk (Hanya Admin)
+// 6. Lihat transaksi masuk (Hanya Admin)
 router.get("/transactions", verifyToken, checkRole([1]), SubscribtionController.getTransactions);
 
-// 5. Konfirmasi transaksi (Hanya Admin)
+// 7. Konfirmasi transaksi (Hanya Admin)
 router.put("/transactions/:id/confirm", verifyToken, checkRole([1]), SubscribtionController.confirmTransaction);
 
 module.exports = router;

@@ -1,9 +1,11 @@
 const User = require("../models/user");
 const response = require("../utils/responseHelper");
+const { checkExpiredMemberships } = require("../utils/membershipHelper");
 
 const profileController = {
   getProfile: async (req, res) => {
     try {
+      await checkExpiredMemberships();
       const idUser = req.user.id_user;
       const idRole = req.user.id_role;
 

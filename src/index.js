@@ -14,6 +14,7 @@ const manajemenAkunRoutes = require("./routes/manajemenAkunRoutes");
 const kategoriSampahRoutes = require("./routes/kategoriSampahRoutes");
 const subscribtionRoutes = require("./routes/subscribtionRoutes");
 const artikelRoutes = require("./routes/artikelRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const app = express();
 
@@ -39,11 +40,11 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/auth", authRoutes);
 app.use("/api/setor", setorRoutes);
 app.use("/api/profile", profileRoutes);
-``;
 app.use("/api/manajemen-akun", manajemenAkunRoutes);
 app.use("/api/jenis-sampah", kategoriSampahRoutes);
 app.use("/api/subscriptions", subscribtionRoutes);
 app.use("/api/articles", artikelRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.json({

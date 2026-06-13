@@ -37,8 +37,33 @@ const ArtikelController = {
   // 3. Ambil semua artikel aktif
   getAllArticles: async (req, res) => {
     try {
-      const data = await Artikel.getAll();
-      return response.success(res, "Berhasil mengambil daftar artikel", data);
+      const { page = 1, limit = 10 } = req.query;
+      const parsedPage = parseInt(page) || 1;
+      const parsedLimit = parseInt(limit) || 10;
+      const offset = (parsedPage - 1) * parsedLimit;
+
+      const { total, data } = await Artikel.getAll(parsedLimit, offset);
+      const formattedData = data.map(art => {
+        let preview = art.isi;
+        if (preview && preview.length > 150) {
+          preview = preview.substring(0, 150) + "...";
+        }
+        return {
+          ...art,
+          isi: preview
+        };
+      });
+      return res.status(200).json({
+        status: "success",
+        message: "Berhasil mengambil daftar artikel",
+        pagination: {
+          total_items: total,
+          total_pages: Math.ceil(total / parsedLimit),
+          current_page: parsedPage,
+          limit: parsedLimit
+        },
+        data: formattedData
+      });
     } catch (error) {
       console.error("error getAllArticles:", error);
       return response.error(res, "Terjadi kesalahan pada server", 500);

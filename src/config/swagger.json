@@ -805,6 +805,39 @@
       }
     },
     "/api/manajemen-akun/{id_user}": {
+      "get": {
+        "summary": "Mendapatkan detail data satu akun (Khusus Admin)",
+        "tags": [
+          "Admin (Manajemen Akun)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_user",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID User yang ingin dilihat detailnya"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan detail akun"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Akun tidak ditemukan"
+          }
+        }
+      },
       "put": {
         "summary": "Memperbarui data dasar user (Nama, Email, Telepon) lewat panel Admin",
         "tags": [
@@ -939,13 +972,22 @@
               "schema": {
                 "type": "object",
                 "required": [
+                  "id_jenis_sampah",
                   "alamat",
                   "foto"
                 ],
                 "properties": {
+                  "id_jenis_sampah": {
+                    "type": "integer",
+                    "example": 1
+                  },
                   "alamat": {
                     "type": "string",
                     "example": "Jl. Mastrip No. 164, Jember"
+                  },
+                  "catatan": {
+                    "type": "string",
+                    "example": "Ditaruh depan pagar"
                   },
                   "latitude": {
                     "type": "string",
@@ -992,6 +1034,128 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/setor/history/customer": {
+      "get": {
+        "summary": "Customer melihat riwayat penjemputan sampah miliknya (Khusus Customer)",
+        "tags": [
+          "Setor Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil riwayat customer"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/setor/{id}": {
+      "get": {
+        "summary": "Mendapatkan detail data satu transaksi setor sampah (Bisa diakses oleh Customer/Petugas/Admin)",
+        "tags": [
+          "Setor Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Order setor sampah"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil detail penjemputan"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Order tidak ditemukan"
+          }
+        }
+      }
+    },
+    "/api/dashboard": {
+      "get": {
+        "summary": "Mendapatkan data ringkasan dashboard sesuai dengan peran masing-masing (Admin, Petugas, Customer)",
+        "tags": [
+          "Dashboard"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil memuat dashboard"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/subscriptions/payment-methods": {
+      "get": {
+        "summary": "Mendapatkan daftar metode pembayaran yang didukung",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil daftar metode pembayaran"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/subscriptions/summary": {
+      "get": {
+        "summary": "Mendapatkan ringkasan total pendapatan dan member aktif (Khusus Admin)",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil memuat summary"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
@@ -1205,15 +1369,28 @@
             "description": "Unauthorized"
           }
         }
-      },
-      "post": {
-        "summary": "Admin membuat paket subscription baru (Khusus Admin)",
+      }
+    },
+    "/api/subscriptions/{id}": {
+      "put": {
+        "summary": "Admin memperbarui paket subscription (Khusus Admin)",
         "tags": [
           "Subscription"
         ],
         "security": [
           {
             "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID Paket subscription"
           }
         ],
         "requestBody": {
@@ -1224,8 +1401,7 @@
                 "type": "object",
                 "required": [
                   "nama",
-                  "harga",
-                  "poin"
+                  "harga"
                 ],
                 "properties": {
                   "nama": {
@@ -1235,10 +1411,6 @@
                   "harga": {
                     "type": "integer",
                     "example": 150000
-                  },
-                  "poin": {
-                    "type": "integer",
-                    "example": 500
                   }
                 }
               }
@@ -1246,21 +1418,24 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Berhasil membuat paket subscription baru"
+          "200": {
+            "description": "Berhasil memperbarui paket subscription"
           },
           "401": {
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Forbidden - Khusus Admin"
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Paket tidak ditemukan"
           }
         }
       }
     },
     "/api/subscriptions/purchase": {
       "post": {
-        "summary": "Customer mengajukan pembelian paket subscription (Khusus Customer)",
+        "summary": "Customer mengajukan pembelian paket subscription dengan diskon poin (Khusus Customer)",
         "tags": [
           "Subscription"
         ],
@@ -1277,22 +1452,26 @@
                 "type": "object",
                 "required": [
                   "id_subscribtion",
-                  "metode_pembayaran",
-                  "bukti_pembayaran"
+                  "id_metode_pembayaran"
                 ],
                 "properties": {
                   "id_subscribtion": {
                     "type": "integer",
                     "example": 1
                   },
-                  "metode_pembayaran": {
-                    "type": "string",
-                    "example": "Transfer Bank Mandiri"
+                  "id_metode_pembayaran": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "poin_digunakan": {
+                    "type": "integer",
+                    "example": 5000,
+                    "description": "Poin reward yang ingin digunakan sebagai diskon (opsional)"
                   },
                   "bukti_pembayaran": {
                     "type": "string",
                     "format": "binary",
-                    "description": "File gambar bukti transfer (jpg/png)"
+                    "description": "File gambar bukti transfer (Wajib jika sisa bayar > 0)"
                   }
                 }
               }
@@ -1301,7 +1480,7 @@
         },
         "responses": {
           "201": {
-            "description": "Permintaan pembelian berhasil diajukan"
+            "description": "Permintaan pembelian berhasil diajukan / lunas otomatis"
           },
           "400": {
             "description": "Bukti pembayaran wajib diunggah atau input tidak valid"
@@ -1786,34 +1965,24 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "required": [
-                  "items"
+                  "berat_sampah",
+                  "foto_bukti_penjemputan"
                 ],
                 "properties": {
-                  "items": {
-                    "type": "array",
-                    "description": "Daftar barang sampah yang ditimbang di lokasi",
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "id_jenis_sampah",
-                        "berat_sampah"
-                      ],
-                      "properties": {
-                        "id_jenis_sampah": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "berat_sampah": {
-                          "type": "number",
-                          "format": "float",
-                          "example": 3.5
-                        }
-                      }
-                    }
+                  "berat_sampah": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 5.5,
+                    "description": "Timbangan berat sampah (dalam kg)"
+                  },
+                  "foto_bukti_penjemputan": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File gambar bukti penjemputan (jpg/png)"
                   }
                 }
               }
@@ -1825,7 +1994,7 @@
             "description": "Order penjemputan selesai diproses dan poin telah diberikan ke customer"
           },
           "400": {
-            "description": "Data input timbangan tidak valid"
+            "description": "Data input timbangan atau file bukti tidak valid"
           },
           "401": {
             "description": "Unauthorized"

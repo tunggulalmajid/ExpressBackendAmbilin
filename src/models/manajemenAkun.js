@@ -2,8 +2,48 @@ const db = require("../config/dbConf");
 const User = require("../models/user");
 
 const manajemenAkun = {
-  getAkun: async (id_role = null) => {
-    let query = `
+  getAkun: async (id_role = null, limit = 10, offset = 0) => {
+    let baseQuery = `
+      FROM user u
+      JOIN role r ON u.id_role = r.id
+      LEFT JOIN customer c ON u.id_user = c.id_user
+      LEFT JOIN petugas p ON u.id_user = p.id_user
+    `;
+
+    const params = [];
+    let whereClause = "";
+
+    if (id_role) {
+      whereClause = " WHERE u.id_role = ?";
+      params.push(id_role);
+    } else {
+      whereClause = " WHERE u.id_role <> 1";
+    }
+
+    // Hitung total records
+    const countQuery = `SELECT COUNT(*) AS total ${baseQuery} ${whereClause}`;
+    const [countResult] = await db.query(countQuery, params);
+    const total = countResult[0].total;
+
+    // Ambil data dengan LIMIT dan OFFSET
+    const selectQuery = `
+      SELECT 
+        u.id_user, u.nama, u.email, u.nomor_telepon, u.foto, u.alamat, u.id_role,
+        r.nama_role,
+        c.id_customer, c.poin, c.is_member, c.is_aktif AS customer_aktif, c.expired_member_date,
+        p.id_petugas, p.is_aktif AS petugas_aktif
+      ${baseQuery}
+      ${whereClause}
+      ORDER BY u.nama
+      LIMIT ? OFFSET ?
+    `;
+
+    const [result] = await db.query(selectQuery, [...params, parseInt(limit), parseInt(offset)]);
+    return { total, data: result };
+  },
+
+  findById: async (id_user) => {
+    const query = `
       SELECT 
         u.id_user, u.nama, u.email, u.nomor_telepon, u.foto, u.alamat, u.id_role,
         r.nama_role,
@@ -13,24 +53,12 @@ const manajemenAkun = {
       JOIN role r ON u.id_role = r.id
       LEFT JOIN customer c ON u.id_user = c.id_user
       LEFT JOIN petugas p ON u.id_user = p.id_user
-      
+      WHERE u.id_user = ?
     `;
-
-    const params = [];
-
-    if (id_role) {
-      query += " WHERE u.id_role = ?";
-      params.push(id_role);
-    } else {
-      query += " WHERE u.id_role <> 1";
-      params.push(id_role);
-    }
-
-    query += " ORDER BY u.nama;";
-
-    const [result] = await db.query(query, params);
-    return result;
+    const [rows] = await db.query(query, [id_user]);
+    return rows[0];
   },
+
   createUser: async (userData) => {
     const { nama, email, password, id_role, nomor_telepon } = userData;
     const [result] = await db.query(

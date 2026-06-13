@@ -8,9 +8,6 @@ const uploadCloud = require("../config/cloudinaryConf");
 // 1. Ambil semua kategori artikel (Customer, Petugas, Admin)
 router.get("/categories", verifyToken, ArtikelController.getCategories);
 
-// 2. Admin membuat kategori baru (Hanya Admin)
-router.post("/categories", verifyToken, checkRole([1]), ArtikelController.createCategory);
-
 // === ARTIKEL ===
 // 3. Ambil semua artikel aktif (Customer, Petugas, Admin)
 router.get("/", verifyToken, ArtikelController.getAllArticles);

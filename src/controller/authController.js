@@ -4,6 +4,7 @@ const User = require("../models/user");
 const response = require("../utils/responseHelper");
 const db = require("../config/dbConf");
 const https = require("https");
+const { checkExpiredMemberships } = require("../utils/membershipHelper");
 require("dotenv").config();
 
 const AuthController = {
@@ -60,6 +61,7 @@ const AuthController = {
 
   login: async (req, res) => {
     try {
+      await checkExpiredMemberships();
       const { email, password } = req.body;
 
       const user = await User.findByEmail(email);
@@ -167,6 +169,7 @@ const AuthController = {
 
   googleLogin: async (req, res) => {
     try {
+      await checkExpiredMemberships();
       const { idToken } = req.body;
       if (!idToken) {
         return response.error(res, "ID Token Firebase wajib dikirim", 400);

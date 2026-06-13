@@ -18,20 +18,30 @@ const Artikel = {
   },
 
   // === ARTIKEL ===
-  getAll: async () => {
-    const [rows] = await db.query(`
-      SELECT 
-        a.id_artikel, a.judul, a.foto_thumbnail, a.isi, a.created_at, a.updated_at,
-        ja.id_jenis_artikel, ja.nama AS nama_kategori,
-        u.nama AS nama_penulis
+  getAll: async (limit = 10, offset = 0) => {
+    const baseQuery = `
       FROM artikel a
       JOIN jenis_artikel ja ON a.id_jenis_artikel = ja.id_jenis_artikel
       JOIN admin ad ON a.id_admin = ad.id_admin
       JOIN user u ON ad.id_user = u.id_user
       WHERE a.is_delete = 0
+    `;
+
+    const [countResult] = await db.query(`SELECT COUNT(*) AS total ${baseQuery}`);
+    const total = countResult[0].total;
+
+    const dataQuery = `
+      SELECT 
+        a.id_artikel, a.judul, a.foto_thumbnail, a.isi, a.created_at, a.updated_at,
+        ja.id_jenis_artikel, ja.nama AS nama_kategori,
+        u.nama AS nama_penulis
+      ${baseQuery}
       ORDER BY a.created_at DESC
-    `);
-    return rows;
+      LIMIT ? OFFSET ?
+    `;
+
+    const [rows] = await db.query(dataQuery, [parseInt(limit), parseInt(offset)]);
+    return { total, data: rows };
   },
 
   findById: async (id_artikel) => {
