@@ -106,7 +106,9 @@ const Setor = {
         js.nama AS nama_jenis_sampah, js.poin_per_kg,
         c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer
       ${baseQuery}
-      ORDER BY s.pickup_at DESC, s.created_at DESC
+      ORDER BY 
+        CASE WHEN s.status = 'proses' THEN 1 WHEN s.status = 'selesai' THEN 2 ELSE 3 END ASC, 
+        s.created_at DESC
       LIMIT ? OFFSET ?
     `;
     const [rows] = await db.query(dataQuery, [id_petugas, parseInt(limit), parseInt(offset)]);

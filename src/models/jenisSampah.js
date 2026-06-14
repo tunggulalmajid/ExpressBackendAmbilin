@@ -2,11 +2,22 @@ const db = require("../config/dbConf");
 
 const jenisSampah = {
   // Hanya mengambil data yang belum di-soft delete
-  getJenisSampah: async () => {
-    const [result] = await db.query(
-      "SELECT id_jenis_sampah, nama, poin_per_kg, is_delete,created_at, updated_at FROM jenis_sampah WHERE is_delete = false",
+  getJenisSampah: async (limit = null, offset = null) => {
+    const [countResult] = await db.query(
+      "SELECT COUNT(*) AS total FROM jenis_sampah WHERE is_delete = false"
     );
-    return result;
+    const total = countResult[0].total;
+
+    let query = "SELECT id_jenis_sampah, nama, poin_per_kg, is_delete, created_at, updated_at FROM jenis_sampah WHERE is_delete = false";
+    const params = [];
+
+    if (limit !== null && offset !== null) {
+      query += " LIMIT ? OFFSET ?";
+      params.push(parseInt(limit), parseInt(offset));
+    }
+
+    const [result] = await db.query(query, params);
+    return { total, data: result };
   },
 
   // Mengambil satu data spesifik berdasarkan ID untuk keperluan validasi

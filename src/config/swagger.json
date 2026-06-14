@@ -148,6 +148,566 @@
           }
         }
       },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 3
+          },
+          "nama_role": {
+            "type": "string",
+            "example": "Customer"
+          }
+        }
+      },
+      "Petugas": {
+        "type": "object",
+        "properties": {
+          "id_petugas": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_user": {
+            "type": "integer",
+            "example": 5
+          },
+          "is_aktif": {
+            "type": "boolean",
+            "example": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id_customer": {
+            "type": "integer",
+            "example": 2
+          },
+          "id_user": {
+            "type": "integer",
+            "example": 12
+          },
+          "poin": {
+            "type": "integer",
+            "example": 150
+          },
+          "is_member": {
+            "type": "boolean",
+            "example": false
+          },
+          "is_aktif": {
+            "type": "boolean",
+            "example": true
+          },
+          "expired_member_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "Admin": {
+        "type": "object",
+        "properties": {
+          "id_admin": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_user": {
+            "type": "integer",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "Subscription": {
+        "type": "object",
+        "properties": {
+          "id_subscribtion": {
+            "type": "integer",
+            "example": 1
+          },
+          "nama": {
+            "type": "string",
+            "example": "Gold Membership 30 Hari"
+          },
+          "harga": {
+            "type": "integer",
+            "example": 150000
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "MetodePembayaran": {
+        "type": "object",
+        "properties": {
+          "id_metode_pembayaran": {
+            "type": "integer",
+            "example": 1
+          },
+          "nama": {
+            "type": "string",
+            "example": "Transfer Bank Mandiri"
+          },
+          "keterangan": {
+            "type": "string",
+            "example": "Kirim ke rekening Mandiri 142000xxxx a.n Ambilin"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "Transaksi": {
+        "type": "object",
+        "properties": {
+          "id_transaksi": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_customer": {
+            "type": "integer",
+            "example": 2
+          },
+          "id_admin": {
+            "type": "integer",
+            "nullable": true,
+            "example": 1
+          },
+          "id_metode_pembayaran": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_subscribtion": {
+            "type": "integer",
+            "example": 1
+          },
+          "bukti_pembayaran": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://url.com/bukti.jpg"
+          },
+          "poin_digunakan": {
+            "type": "integer",
+            "example": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "menunggu",
+              "berhasil",
+              "gagal"
+            ],
+            "example": "menunggu"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-14T10:00:00.000Z"
+          },
+          "confirmed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-06-14T10:05:00.000Z"
+          }
+        }
+      },
+      "SetorSampah": {
+        "type": "object",
+        "properties": {
+          "id_setor_sampah": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_petugas": {
+            "type": "integer",
+            "nullable": true,
+            "example": 2
+          },
+          "id_customer": {
+            "type": "integer",
+            "example": 3
+          },
+          "id_jenis_sampah": {
+            "type": "integer",
+            "nullable": true,
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "menunggu",
+              "proses",
+              "selesai",
+              "dibatalkan"
+            ],
+            "example": "menunggu"
+          },
+          "alamat": {
+            "type": "string",
+            "example": "Jl. Mastrip No. 164, Jember"
+          },
+          "catatan": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ditaruh depan pagar"
+          },
+          "latitude": {
+            "type": "string",
+            "example": "-8.123456"
+          },
+          "longitude": {
+            "type": "string",
+            "example": "113.123456"
+          },
+          "berat_sampah": {
+            "type": "number",
+            "nullable": true,
+            "example": 5.5
+          },
+          "foto": {
+            "type": "string",
+            "example": "https://url.com/foto.jpg"
+          },
+          "foto_bukti_penjemputan": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://url.com/bukti.jpg"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-14T10:00:00.000Z"
+          },
+          "pickup_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-06-14T11:00:00.000Z"
+          }
+        }
+      },
+      "JenisArtikel": {
+        "type": "object",
+        "properties": {
+          "id_jenis_artikel": {
+            "type": "integer",
+            "example": 1
+          },
+          "nama": {
+            "type": "string",
+            "example": "Edukasi Daur Ulang"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "Artikel": {
+        "type": "object",
+        "properties": {
+          "id_artikel": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_admin": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_jenis_artikel": {
+            "type": "integer",
+            "example": 1
+          },
+          "judul": {
+            "type": "string",
+            "example": "Cara Mengurangi Sampah Plastik"
+          },
+          "foto_thumbnail": {
+            "type": "string",
+            "example": "https://url.com/thumb.jpg"
+          },
+          "isi": {
+            "type": "string",
+            "example": "Isi artikel lengkap..."
+          },
+          "is_delete": {
+            "type": "boolean",
+            "example": false
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-01T10:00:00.000Z"
+          }
+        }
+      },
+      "AdminDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Berhasil memuat dashboard Admin"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total_pending_transaksi": {
+                "type": "integer",
+                "example": 3
+              },
+              "total_pendapatan": {
+                "type": "number",
+                "example": 450000
+              },
+              "total_sampah_terkumpul": {
+                "type": "number",
+                "example": 120.5
+              },
+              "total_artikel": {
+                "type": "integer",
+                "example": 12
+              },
+              "recent_transactions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id_transaksi": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "nama_customer": {
+                      "type": "string",
+                      "example": "Budi"
+                    },
+                    "nama_paket": {
+                      "type": "string",
+                      "example": "Gold Package"
+                    },
+                    "bukti_pembayaran": {
+                      "type": "string",
+                      "example": "https://url.com"
+                    },
+                    "poin_digunakan": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "menunggu"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "example": "2026-06-14T10:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Berhasil memuat dashboard Customer"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total_poin": {
+                "type": "integer",
+                "example": 500
+              },
+              "is_member": {
+                "type": "boolean",
+                "example": true
+              },
+              "expired_member_date": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-07-14T10:00:00.000Z",
+                "nullable": true
+              },
+              "recent_articles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id_artikel": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "judul": {
+                      "type": "string",
+                      "example": "Cara Mengurangi Plastik"
+                    },
+                    "foto_thumbnail": {
+                      "type": "string",
+                      "example": "https://url.com"
+                    },
+                    "isi": {
+                      "type": "string",
+                      "example": "Preview isi artikel..."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "example": "2026-06-14T10:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PetugasDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Berhasil memuat dashboard Petugas"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total_pesanan_dilayani": {
+                "type": "integer",
+                "example": 15
+              },
+              "total_sampah_diangkut": {
+                "type": "number",
+                "example": 250.75
+              }
+            }
+          }
+        }
+      },
+      "SubscriptionHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Berhasil mengambil riwayat subscription"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total_items": {
+                "type": "integer",
+                "example": 5
+              },
+              "total_pages": {
+                "type": "integer",
+                "example": 1
+              },
+              "current_page": {
+                "type": "integer",
+                "example": 1
+              },
+              "limit": {
+                "type": "integer",
+                "example": 10
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id_transaksi": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "bukti_pembayaran": {
+                  "type": "string",
+                  "example": "https://url.com",
+                  "nullable": true
+                },
+                "poin_digunakan": {
+                  "type": "integer",
+                  "example": 1000
+                },
+                "status": {
+                  "type": "string",
+                  "example": "berhasil"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2026-06-14T10:00:00.000Z"
+                },
+                "confirmed_at": {
+                  "type": "string",
+                  "example": "2026-06-14T10:05:00.000Z",
+                  "nullable": true
+                },
+                "nama_paket": {
+                  "type": "string",
+                  "example": "Gold Membership"
+                },
+                "harga_paket": {
+                  "type": "number",
+                  "example": 100000
+                },
+                "nama_metode_pembayaran": {
+                  "type": "string",
+                  "example": "Poin Reward"
+                }
+              }
+            }
+          }
+        }
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
@@ -709,6 +1269,26 @@
               "type": "integer",
               "example": 2
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
           }
         ],
         "responses": {
@@ -974,6 +1554,8 @@
                 "required": [
                   "id_jenis_sampah",
                   "alamat",
+                  "latitude",
+                  "longitude",
                   "foto"
                 ],
                 "properties": {
@@ -1049,6 +1631,28 @@
             "bearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Berhasil mengambil riwayat customer"
@@ -1094,9 +1698,9 @@
         }
       }
     },
-    "/api/dashboard": {
+    "/api/dashboard/admin": {
       "get": {
-        "summary": "Mendapatkan data ringkasan dashboard sesuai dengan peran masing-masing (Admin, Petugas, Customer)",
+        "summary": "Mendapatkan data ringkasan dashboard Admin (Khusus Admin)",
         "tags": [
           "Dashboard"
         ],
@@ -1107,10 +1711,82 @@
         ],
         "responses": {
           "200": {
-            "description": "Berhasil memuat dashboard"
+            "description": "Berhasil memuat dashboard Admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminDashboardResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Admin"
+          }
+        }
+      }
+    },
+    "/api/dashboard/customer": {
+      "get": {
+        "summary": "Mendapatkan data ringkasan dashboard Customer (Khusus Customer)",
+        "tags": [
+          "Dashboard"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil memuat dashboard Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDashboardResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Customer"
+          }
+        }
+      }
+    },
+    "/api/dashboard/petugas": {
+      "get": {
+        "summary": "Mendapatkan data ringkasan dashboard Petugas (Khusus Petugas)",
+        "tags": [
+          "Dashboard"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil memuat dashboard Petugas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetugasDashboardResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Petugas"
           }
         }
       }
@@ -1162,9 +1838,36 @@
     },
     "/api/jenis-sampah": {
       "get": {
-        "summary": "Mendapatkan daftar semua jenis sampah yang aktif (Public / Tanpa Token)",
+        "summary": "Mendapatkan daftar semua jenis sampah yang aktif (Memerlukan Token)",
         "tags": [
           "Jenis Sampah"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1371,6 +2074,59 @@
         }
       }
     },
+    "/api/subscriptions/history": {
+      "get": {
+        "summary": "Customer melihat riwayat transaksi pembelian subscription miliknya (Khusus Customer)",
+        "tags": [
+          "Subscription"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil riwayat transaksi subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Khusus Customer"
+          }
+        }
+      }
+    },
     "/api/subscriptions/{id}": {
       "put": {
         "summary": "Admin memperbarui paket subscription (Khusus Admin)",
@@ -1511,6 +2267,26 @@
             "schema": {
               "type": "string",
               "example": "menunggu"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
             }
           }
         ],
@@ -1656,6 +2432,28 @@
         "security": [
           {
             "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
           }
         ],
         "responses": {
@@ -1871,6 +2669,28 @@
             "bearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Berhasil mengambil order aktif"
@@ -1893,6 +2713,28 @@
         "security": [
           {
             "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Nomor halaman (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Jumlah item per halaman (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
           }
         ],
         "responses": {

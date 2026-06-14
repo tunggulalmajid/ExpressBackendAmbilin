@@ -2,15 +2,26 @@ const jenisSampah = require("../models/jenisSampah");
 const response = require("../utils/responseHelper");
 
 const jenisSampahController = {
-  // 1. GET ALL DATA
+  // 1. GET ALL DATA (Paginated)
   getAllJenisSampah: async (req, res) => {
     try {
-      const data = await jenisSampah.getJenisSampah();
-      return response.success(
-        res,
-        "Berhasil mengambil semua jenis sampah",
+      const { page = 1, limit = 10 } = req.query;
+      const parsedPage = parseInt(page) || 1;
+      const parsedLimit = parseInt(limit) || 10;
+      const offset = (parsedPage - 1) * parsedLimit;
+
+      const { total, data } = await jenisSampah.getJenisSampah(parsedLimit, offset);
+      return res.status(200).json({
+        status: "success",
+        message: "Berhasil mengambil semua jenis sampah",
+        pagination: {
+          total_items: total,
+          total_pages: Math.ceil(total / parsedLimit),
+          current_page: parsedPage,
+          limit: parsedLimit
+        },
         data,
-      );
+      });
     } catch (error) {
       console.log("error getAllJenisSampah: " + error);
       return response.error(res, "Terjadi kesalahan pada server", 500);

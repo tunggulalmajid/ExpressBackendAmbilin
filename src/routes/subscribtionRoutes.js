@@ -7,8 +7,11 @@ const uploadCloud = require("../config/cloudinaryConf");
 // 1. Ambil daftar paket subscription (Customer, Petugas, Admin)
 router.get("/", verifyToken, SubscribtionController.getSubscriptions);
 
-// 2. Ambil daftar metode pembayaran (Customer, Petugas, Admin)
+// 2. Impor daftar metode pembayaran (Customer, Petugas, Admin)
 router.get("/payment-methods", verifyToken, SubscribtionController.getPaymentMethods);
+
+// Lihat histori transaksi customer (Hanya Customer)
+router.get("/history", verifyToken, checkRole([3]), SubscribtionController.getCustomerHistory);
 
 // 3. Ambil ringkasan pendapatan & member aktif (Hanya Admin)
 router.get("/summary", verifyToken, checkRole([1]), SubscribtionController.getSummary);

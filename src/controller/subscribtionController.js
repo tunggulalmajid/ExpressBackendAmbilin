@@ -237,6 +237,41 @@ const SubscribtionController = {
       console.error("error getPaymentMethods:", error);
       return response.error(res, "Terjadi kesalahan pada server", 500);
     }
+  },
+
+  // 8. Customer melihat histori transaksinya sendiri (Paginated)
+  getCustomerHistory: async (req, res) => {
+    try {
+      const id_user = req.user.id_user;
+      const { page = 1, limit = 10 } = req.query;
+
+      // Cari id_customer berdasarkan id_user
+      const [customerRows] = await db.query("SELECT id_customer FROM customer WHERE id_user = ?", [id_user]);
+      const customer = customerRows[0];
+      if (!customer) {
+        return response.error(res, "Profil customer tidak ditemukan", 404);
+      }
+
+      const parsedPage = parseInt(page) || 1;
+      const parsedLimit = parseInt(limit) || 10;
+      const offset = (parsedPage - 1) * parsedLimit;
+
+      const { total, data } = await Subscribtion.getCustomerTransactions(customer.id_customer, parsedLimit, offset);
+      return res.status(200).json({
+        status: "success",
+        message: "Berhasil mengambil riwayat subscription",
+        pagination: {
+          total_items: total,
+          total_pages: Math.ceil(total / parsedLimit),
+          current_page: parsedPage,
+          limit: parsedLimit
+        },
+        data
+      });
+    } catch (error) {
+      console.error("error getCustomerHistory:", error);
+      return response.error(res, "Terjadi kesalahan pada server", 500);
+    }
   }
 };
 

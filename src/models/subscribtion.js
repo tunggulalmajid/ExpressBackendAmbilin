@@ -177,6 +177,39 @@ const Subscribtion = {
   getPaymentMethods: async () => {
     const [rows] = await db.query("SELECT * FROM metode_pembayaran");
     return rows;
+  },
+
+  // Customer melihat riwayat transaksinya sendiri (Paginated)
+  getCustomerTransactions: async (id_customer, limit = 10, offset = 0) => {
+    const baseQuery = `
+      FROM transaksi t
+      JOIN subscribtion s ON t.id_subscribtion = s.id_subscribtion
+      JOIN metode_pembayaran mp ON t.id_metode_pembayaran = mp.id_metode_pembayaran
+      WHERE t.id_customer = ?
+    `;
+
+    // Get total
+    const [countResult] = await db.query(`SELECT COUNT(*) AS total ${baseQuery}`, [id_customer]);
+    const total = countResult[0].total;
+
+    // Get paginated data
+    const dataQuery = `
+      SELECT 
+        t.id_transaksi,
+        t.bukti_pembayaran,
+        t.poin_digunakan,
+        t.status,
+        t.created_at,
+        t.confirmed_at,
+        s.nama AS nama_paket, s.harga AS harga_paket,
+        mp.nama AS nama_metode_pembayaran
+      ${baseQuery}
+      ORDER BY t.created_at DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    const [rows] = await db.query(dataQuery, [id_customer, parseInt(limit), parseInt(offset)]);
+    return { total, data: rows };
   }
 };
 

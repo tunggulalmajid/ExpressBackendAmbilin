@@ -3,7 +3,7 @@ const router = express.Router();
 const jenisSampahController = require("../controller/jenisSampahController");
 const { verifyToken, checkRole } = require("../middleware/authMiddleware");
 
-router.get("/", jenisSampahController.getAllJenisSampah);
+router.get("/", verifyToken, jenisSampahController.getAllJenisSampah);
 router.post("/", verifyToken, checkRole([1]), jenisSampahController.create);
 
 router.put(
