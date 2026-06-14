@@ -213,11 +213,6 @@ const AuthController = {
       }
 
       // 3. Verify JWT with certificates
-      const projectId = process.env.FIREBASE_PROJECT_ID;
-      if (!projectId) {
-        return response.error(res, "Konfigurasi FIREBASE_PROJECT_ID belum diset di server", 500);
-      }
-
       let payload;
       try {
         if (isGoogleDirect) {
@@ -226,6 +221,10 @@ const AuthController = {
             algorithms: ["RS256"]
           });
         } else {
+          const projectId = process.env.FIREBASE_PROJECT_ID;
+          if (!projectId) {
+            return response.error(res, "Konfigurasi FIREBASE_PROJECT_ID belum diset di server", 500);
+          }
           payload = jwt.verify(idToken, cert, {
             audience: projectId,
             issuer: `https://securetoken.google.com/${projectId}`,
