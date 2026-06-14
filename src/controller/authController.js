@@ -172,20 +172,27 @@ const AuthController = {
       await checkExpiredMemberships();
       const { idToken } = req.body;
       if (!idToken) {
-        return response.error(res, "ID Token Firebase wajib dikirim", 400);
+        return response.error(res, "ID Token Google/Firebase wajib dikirim", 400);
       }
 
-      // 1. Decode token to get 'kid'
+      // 1. Decode token to get 'kid' and 'iss'
       const decoded = jwt.decode(idToken, { complete: true });
       if (!decoded || !decoded.header || !decoded.header.kid) {
-        return response.error(res, "Format ID Token Firebase tidak valid", 400);
+        return response.error(res, "Format ID Token tidak valid", 400);
       }
       const kid = decoded.header.kid;
+      const payloadDecoded = decoded.payload || {};
+      const iss = payloadDecoded.iss;
+      const isGoogleDirect = iss === "https://accounts.google.com" || iss === "accounts.google.com";
 
-      // 2. Fetch Google's public certificates for Firebase
+      // 2. Fetch Google's public certificates dynamically based on issuer
+      const certUrl = isGoogleDirect
+        ? "https://www.googleapis.com/oauth2/v1/certs"
+        : "https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com";
+
       const getGoogleCerts = () => {
         return new Promise((resolve, reject) => {
-          https.get("https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com", (apiRes) => {
+          https.get(certUrl, (apiRes) => {
             let data = "";
             apiRes.on("data", (chunk) => { data += chunk; });
             apiRes.on("end", () => {
@@ -213,14 +220,21 @@ const AuthController = {
 
       let payload;
       try {
-        payload = jwt.verify(idToken, cert, {
-          audience: projectId,
-          issuer: `https://securetoken.google.com/${projectId}`,
-          algorithms: ["RS256"]
-        });
+        if (isGoogleDirect) {
+          payload = jwt.verify(idToken, cert, {
+            issuer: ["https://accounts.google.com", "accounts.google.com"],
+            algorithms: ["RS256"]
+          });
+        } else {
+          payload = jwt.verify(idToken, cert, {
+            audience: projectId,
+            issuer: `https://securetoken.google.com/${projectId}`,
+            algorithms: ["RS256"]
+          });
+        }
       } catch (err) {
-        console.error("Firebase ID Token verification failed:", err);
-        return response.error(res, "Firebase ID Token tidak valid atau kadaluarsa", 401);
+        console.error("Token verification failed:", err);
+        return response.error(res, "ID Token tidak valid atau kadaluarsa", 401);
       }
 
       const email = payload.email;
@@ -274,23 +288,20 @@ const AuthController = {
       const responseData = {
         accessToken,
         refreshToken,
-        data: {
-          user: {
-            id_user: user.id_user,
-            nama: user.nama,
-            email: user.email,
-            id_role: user.id_role,
-          },
-          customer: customer
-            ? {
+        user: {
+          id_user: user.id_user,
+          nama: user.nama,
+          email: user.email,
+          id_role: user.id_role,
+        },
+        customer: customer
+          ? {
               id_customer: customer.id_customer,
               poin: customer.poin,
               is_member: customer.is_member,
             }
-            : null,
-          isNewUser
-        }
-
+          : null,
+        isNewUser
       };
 
       return response.success(res, isNewUser ? "Registrasi & Login Google berhasil" : "Login Google berhasil", responseData, 200);
