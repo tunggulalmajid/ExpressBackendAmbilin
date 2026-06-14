@@ -27,10 +27,13 @@ const Setor = {
       SELECT 
         s.*,
         js.nama AS nama_jenis_sampah, js.poin_per_kg,
-        c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer
+        c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer,
+        up.nama AS nama_petugas
       FROM setor_sampah s
       JOIN customer c ON s.id_customer = c.id_customer
       JOIN user u ON c.id_user = u.id_user
+      LEFT JOIN petugas p ON s.id_petugas = p.id_petugas
+      LEFT JOIN user up ON p.id_user = up.id_user
       LEFT JOIN jenis_sampah js ON s.id_jenis_sampah = js.id_jenis_sampah
       WHERE s.id_setor_sampah = ?
     `;
@@ -42,6 +45,10 @@ const Setor = {
   getCustomerHistory: async (id_customer, limit = 10, offset = 0) => {
     const baseQuery = `
       FROM setor_sampah s
+      JOIN customer c ON s.id_customer = c.id_customer
+      JOIN user u ON c.id_user = u.id_user
+      LEFT JOIN petugas p ON s.id_petugas = p.id_petugas
+      LEFT JOIN user up ON p.id_user = up.id_user
       LEFT JOIN jenis_sampah js ON s.id_jenis_sampah = js.id_jenis_sampah
       WHERE s.id_customer = ?
     `;
@@ -52,7 +59,9 @@ const Setor = {
     const dataQuery = `
       SELECT 
         s.*,
-        js.nama AS nama_jenis_sampah, js.poin_per_kg
+        js.nama AS nama_jenis_sampah, js.poin_per_kg,
+        u.nama AS nama_customer,
+        up.nama AS nama_petugas
       ${baseQuery}
       ORDER BY s.created_at DESC
       LIMIT ? OFFSET ?
@@ -67,6 +76,8 @@ const Setor = {
       FROM setor_sampah s
       JOIN customer c ON s.id_customer = c.id_customer
       JOIN user u ON c.id_user = u.id_user
+      LEFT JOIN petugas p ON s.id_petugas = p.id_petugas
+      LEFT JOIN user up ON p.id_user = up.id_user
       LEFT JOIN jenis_sampah js ON s.id_jenis_sampah = js.id_jenis_sampah
       WHERE s.status = 'menunggu'
     `;
@@ -78,7 +89,8 @@ const Setor = {
       SELECT 
         s.*,
         js.nama AS nama_jenis_sampah, js.poin_per_kg,
-        c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer
+        c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer,
+        up.nama AS nama_petugas
       ${baseQuery}
       ORDER BY s.created_at ASC
       LIMIT ? OFFSET ?
@@ -93,6 +105,8 @@ const Setor = {
       FROM setor_sampah s
       JOIN customer c ON s.id_customer = c.id_customer
       JOIN user u ON c.id_user = u.id_user
+      LEFT JOIN petugas p ON s.id_petugas = p.id_petugas
+      LEFT JOIN user up ON p.id_user = up.id_user
       LEFT JOIN jenis_sampah js ON s.id_jenis_sampah = js.id_jenis_sampah
       WHERE s.id_petugas = ?
     `;
@@ -104,7 +118,8 @@ const Setor = {
       SELECT 
         s.*,
         js.nama AS nama_jenis_sampah, js.poin_per_kg,
-        c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer
+        c.id_user, u.nama AS nama_customer, u.nomor_telepon AS nomor_telepon_customer,
+        up.nama AS nama_petugas
       ${baseQuery}
       ORDER BY 
         CASE WHEN s.status = 'proses' THEN 1 WHEN s.status = 'selesai' THEN 2 ELSE 3 END ASC, 
