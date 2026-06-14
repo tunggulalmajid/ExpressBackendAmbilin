@@ -30,14 +30,17 @@ const Dashboard = {
         t.id_transaksi,
         u.nama AS nama_customer,
         s.nama AS nama_paket,
+        s.harga AS harga_paket,
         t.bukti_pembayaran,
         t.poin_digunakan,
         t.status,
-        t.created_at
+        t.created_at,
+        mp.nama AS nama_metode_pembayaran
       FROM transaksi t
       JOIN customer c ON t.id_customer = c.id_customer
       JOIN user u ON c.id_user = u.id_user
       JOIN subscribtion s ON t.id_subscribtion = s.id_subscribtion
+      JOIN metode_pembayaran mp ON t.id_metode_pembayaran = mp.id_metode_pembayaran
       ORDER BY t.created_at DESC
       LIMIT 5
     `);
