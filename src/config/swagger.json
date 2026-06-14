@@ -115,10 +115,7 @@
       },
       "JenisSampah": {
         "type": "object",
-        "required": [
-          "nama",
-          "poin_per_kg"
-        ],
+        "required": ["nama", "poin_per_kg"],
         "properties": {
           "id_jenis_sampah": {
             "type": "integer",
@@ -316,11 +313,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "menunggu",
-              "berhasil",
-              "gagal"
-            ],
+            "enum": ["menunggu", "berhasil", "gagal"],
             "example": "menunggu"
           },
           "created_at": {
@@ -359,12 +352,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "menunggu",
-              "proses",
-              "selesai",
-              "dibatalkan"
-            ],
+            "enum": ["menunggu", "proses", "selesai", "dibatalkan"],
             "example": "menunggu"
           },
           "alamat": {
@@ -727,20 +715,14 @@
     "/api/auth/register": {
       "post": {
         "summary": "Registrasi user baru",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "nama",
-                  "email",
-                  "password"
-                ],
+                "required": ["nama", "email", "password"],
                 "properties": {
                   "nama": {
                     "type": "string",
@@ -772,19 +754,14 @@
     "/api/auth/login": {
       "post": {
         "summary": "Login user",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -815,18 +792,14 @@
     "/api/auth/refresh": {
       "post": {
         "summary": "Refresh Access Token",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "token"
-                ],
+                "required": ["token"],
                 "properties": {
                   "token": {
                     "type": "string",
@@ -853,18 +826,14 @@
     "/api/auth/google": {
       "post": {
         "summary": "Login atau Register otomatis menggunakan Firebase ID Token (Google Sign-In)",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "idToken"
-                ],
+                "required": ["idToken"],
                 "properties": {
                   "idToken": {
                     "type": "string",
@@ -951,9 +920,7 @@
     "/api/auth/update-password": {
       "put": {
         "summary": "Memperbarui password user dengan memverifikasi password lama (Memerlukan Token)",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "security": [
           {
             "bearerAuth": []
@@ -1004,9 +971,7 @@
     "/api/auth/logout": {
       "delete": {
         "summary": "Logout user",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "security": [
           {
             "bearerAuth": []
@@ -1025,9 +990,7 @@
     "/api/profile": {
       "get": {
         "summary": "Mendapatkan profil data lengkap berdasarkan user yang login",
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "security": [
           {
             "bearerAuth": []
@@ -1077,9 +1040,7 @@
       },
       "put": {
         "summary": "Memperbarui data profil user (Nama, No Telp, Alamat, Koordinat)",
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "security": [
           {
             "bearerAuth": []
@@ -1178,9 +1139,7 @@
     "/api/profile/photo": {
       "put": {
         "summary": "Memperbarui/Mengganti foto profil user (Khusus Unggah Gambar)",
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "security": [
           {
             "bearerAuth": []
@@ -1192,9 +1151,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "foto"
-                ],
+                "required": ["foto"],
                 "properties": {
                   "foto": {
                     "type": "string",
@@ -1251,9 +1208,7 @@
     "/api/manajemen-akun": {
       "get": {
         "summary": "Mendapatkan daftar seluruh akun (Bisa difilter lewat query role)",
-        "tags": [
-          "Admin (Manajemen Akun)"
-        ],
+        "tags": ["Admin (Manajemen Akun)"],
         "security": [
           {
             "bearerAuth": []
@@ -1324,9 +1279,7 @@
       },
       "post": {
         "summary": "Membuat akun Petugas atau Customer baru langsung dari Panel Admin",
-        "tags": [
-          "Admin (Manajemen Akun)"
-        ],
+        "tags": ["Admin (Manajemen Akun)"],
         "security": [
           {
             "bearerAuth": []
@@ -1338,12 +1291,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "id_role",
-                  "nama",
-                  "email",
-                  "password"
-                ],
+                "required": ["id_role", "nama", "email", "password"],
                 "properties": {
                   "id_role": {
                     "type": "integer",
@@ -1387,9 +1335,7 @@
     "/api/manajemen-akun/{id_user}": {
       "get": {
         "summary": "Mendapatkan detail data satu akun (Khusus Admin)",
-        "tags": [
-          "Admin (Manajemen Akun)"
-        ],
+        "tags": ["Admin (Manajemen Akun)"],
         "security": [
           {
             "bearerAuth": []
@@ -1420,9 +1366,7 @@
       },
       "put": {
         "summary": "Memperbarui data dasar user (Nama, Email, Telepon) lewat panel Admin",
-        "tags": [
-          "Admin (Manajemen Akun)"
-        ],
+        "tags": ["Admin (Manajemen Akun)"],
         "security": [
           {
             "bearerAuth": []
@@ -1445,11 +1389,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "nama",
-                  "email",
-                  "nomor_telepon"
-                ],
+                "required": ["nama", "email", "nomor_telepon"],
                 "properties": {
                   "nama": {
                     "type": "string",
@@ -1482,9 +1422,7 @@
       },
       "delete": {
         "summary": "Menonaktifkan akun secara soft delete (Mengubah status is_aktif menjadi 0)",
-        "tags": [
-          "Admin (Manajemen Akun)"
-        ],
+        "tags": ["Admin (Manajemen Akun)"],
         "security": [
           {
             "bearerAuth": []
@@ -1507,9 +1445,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "id_role"
-                ],
+                "required": ["id_role"],
                 "properties": {
                   "id_role": {
                     "type": "integer",
@@ -1537,9 +1473,7 @@
     "/api/setor": {
       "post": {
         "summary": "Mengajukan setoran sampah baru (Khusus Customer)",
-        "tags": [
-          "Setor Sampah"
-        ],
+        "tags": ["Setor Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -1623,9 +1557,7 @@
     "/api/setor/history/customer": {
       "get": {
         "summary": "Customer melihat riwayat penjemputan sampah miliknya (Khusus Customer)",
-        "tags": [
-          "Setor Sampah"
-        ],
+        "tags": ["Setor Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -1666,9 +1598,7 @@
     "/api/setor/{id}": {
       "get": {
         "summary": "Mendapatkan detail data satu transaksi setor sampah (Bisa diakses oleh Customer/Petugas/Admin)",
-        "tags": [
-          "Setor Sampah"
-        ],
+        "tags": ["Setor Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -1701,9 +1631,7 @@
     "/api/dashboard/admin": {
       "get": {
         "summary": "Mendapatkan data ringkasan dashboard Admin (Khusus Admin)",
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "security": [
           {
             "bearerAuth": []
@@ -1732,9 +1660,7 @@
     "/api/dashboard/customer": {
       "get": {
         "summary": "Mendapatkan data ringkasan dashboard Customer (Khusus Customer)",
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "security": [
           {
             "bearerAuth": []
@@ -1763,9 +1689,7 @@
     "/api/dashboard/petugas": {
       "get": {
         "summary": "Mendapatkan data ringkasan dashboard Petugas (Khusus Petugas)",
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "security": [
           {
             "bearerAuth": []
@@ -1794,9 +1718,7 @@
     "/api/subscriptions/payment-methods": {
       "get": {
         "summary": "Mendapatkan daftar metode pembayaran yang didukung",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -1815,9 +1737,7 @@
     "/api/subscriptions/summary": {
       "get": {
         "summary": "Mendapatkan ringkasan total pendapatan dan member aktif (Khusus Admin)",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -1839,9 +1759,7 @@
     "/api/jenis-sampah": {
       "get": {
         "summary": "Mendapatkan daftar semua jenis sampah yang aktif (Memerlukan Token)",
-        "tags": [
-          "Jenis Sampah"
-        ],
+        "tags": ["Jenis Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -1910,9 +1828,7 @@
       },
       "post": {
         "summary": "Menambahkan jenis sampah baru (Khusus Admin)",
-        "tags": [
-          "Jenis Sampah"
-        ],
+        "tags": ["Jenis Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -1924,10 +1840,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "nama",
-                  "poin_per_kg"
-                ],
+                "required": ["nama", "poin_per_kg"],
                 "properties": {
                   "nama": {
                     "type": "string",
@@ -1961,9 +1874,7 @@
     "/api/jenis-sampah/{id_jenis_sampah}": {
       "put": {
         "summary": "Memperbarui data jenis sampah (Khusus Admin)",
-        "tags": [
-          "Jenis Sampah"
-        ],
+        "tags": ["Jenis Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -1986,10 +1897,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "nama",
-                  "poin_per_kg"
-                ],
+                "required": ["nama", "poin_per_kg"],
                 "properties": {
                   "nama": {
                     "type": "string",
@@ -2021,9 +1929,7 @@
       },
       "delete": {
         "summary": "Menghapus jenis sampah secara Soft Delete (Khusus Admin)",
-        "tags": [
-          "Jenis Sampah"
-        ],
+        "tags": ["Jenis Sampah"],
         "security": [
           {
             "bearerAuth": []
@@ -2056,9 +1962,7 @@
     "/api/subscriptions": {
       "get": {
         "summary": "Mendapatkan daftar paket subscription",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -2077,9 +1981,7 @@
     "/api/subscriptions/history": {
       "get": {
         "summary": "Customer melihat riwayat transaksi pembelian subscription miliknya (Khusus Customer)",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -2130,9 +2032,7 @@
     "/api/subscriptions/{id}": {
       "put": {
         "summary": "Admin memperbarui paket subscription (Khusus Admin)",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -2155,10 +2055,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "nama",
-                  "harga"
-                ],
+                "required": ["nama", "harga"],
                 "properties": {
                   "nama": {
                     "type": "string",
@@ -2192,9 +2089,7 @@
     "/api/subscriptions/purchase": {
       "post": {
         "summary": "Customer mengajukan pembelian paket subscription dengan diskon poin (Khusus Customer)",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -2206,10 +2101,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "id_subscribtion",
-                  "id_metode_pembayaran"
-                ],
+                "required": ["id_subscribtion", "id_metode_pembayaran"],
                 "properties": {
                   "id_subscribtion": {
                     "type": "integer",
@@ -2250,9 +2142,7 @@
     "/api/subscriptions/transactions": {
       "get": {
         "summary": "Admin melihat transaksi masuk (Khusus Admin)",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -2306,9 +2196,7 @@
     "/api/subscriptions/transactions/{id}/confirm": {
       "put": {
         "summary": "Admin mengonfirmasi/memverifikasi transaksi (Khusus Admin)",
-        "tags": [
-          "Subscription"
-        ],
+        "tags": ["Subscription"],
         "security": [
           {
             "bearerAuth": []
@@ -2331,16 +2219,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "status"
-                ],
+                "required": ["status"],
                 "properties": {
                   "status": {
                     "type": "string",
-                    "enum": [
-                      "berhasil",
-                      "gagal"
-                    ],
+                    "enum": ["berhasil", "gagal"],
                     "example": "berhasil"
                   }
                 }
@@ -2367,9 +2250,7 @@
     "/api/articles/categories": {
       "get": {
         "summary": "Mendapatkan daftar kategori artikel",
-        "tags": [
-          "Artikel"
-        ],
+        "tags": ["Artikel"],
         "security": [
           {
             "bearerAuth": []
@@ -2383,52 +2264,12 @@
             "description": "Unauthorized"
           }
         }
-      },
-      "post": {
-        "summary": "Admin membuat kategori artikel baru (Khusus Admin)",
-        "tags": [
-          "Artikel"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "nama"
-                ],
-                "properties": {
-                  "nama": {
-                    "type": "string",
-                    "example": "Edukasi Daur Ulang"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Berhasil menambahkan kategori artikel baru"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
       }
     },
     "/api/articles": {
       "get": {
         "summary": "Mendapatkan daftar semua artikel aktif",
-        "tags": [
-          "Artikel"
-        ],
+        "tags": ["Artikel"],
         "security": [
           {
             "bearerAuth": []
@@ -2467,9 +2308,7 @@
       },
       "post": {
         "summary": "Admin mempublikasikan artikel baru (Khusus Admin)",
-        "tags": [
-          "Artikel"
-        ],
+        "tags": ["Artikel"],
         "security": [
           {
             "bearerAuth": []
@@ -2526,9 +2365,7 @@
     "/api/articles/{id}": {
       "get": {
         "summary": "Mendapatkan detail satu artikel berdasarkan ID",
-        "tags": [
-          "Artikel"
-        ],
+        "tags": ["Artikel"],
         "security": [
           {
             "bearerAuth": []
@@ -2559,9 +2396,7 @@
       },
       "put": {
         "summary": "Admin memperbarui data artikel (Khusus Admin)",
-        "tags": [
-          "Artikel"
-        ],
+        "tags": ["Artikel"],
         "security": [
           {
             "bearerAuth": []
@@ -2584,11 +2419,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "id_jenis_artikel",
-                  "judul",
-                  "isi"
-                ],
+                "required": ["id_jenis_artikel", "judul", "isi"],
                 "properties": {
                   "id_jenis_artikel": {
                     "type": "integer",
@@ -2626,9 +2457,7 @@
       },
       "delete": {
         "summary": "Admin menghapus artikel secara soft delete (Khusus Admin)",
-        "tags": [
-          "Artikel"
-        ],
+        "tags": ["Artikel"],
         "security": [
           {
             "bearerAuth": []
@@ -2661,9 +2490,7 @@
     "/api/setor/active": {
       "get": {
         "summary": "Petugas melihat seluruh order penjemputan sampah aktif berstatus 'menunggu' (Khusus Petugas)",
-        "tags": [
-          "Setor Sampah (Petugas)"
-        ],
+        "tags": ["Setor Sampah (Petugas)"],
         "security": [
           {
             "bearerAuth": []
@@ -2707,9 +2534,7 @@
     "/api/setor/history/petugas": {
       "get": {
         "summary": "Petugas melihat riwayat penjemputan yang ditanganinya (Khusus Petugas)",
-        "tags": [
-          "Setor Sampah (Petugas)"
-        ],
+        "tags": ["Setor Sampah (Petugas)"],
         "security": [
           {
             "bearerAuth": []
@@ -2750,9 +2575,7 @@
     "/api/setor/{id}/process": {
       "put": {
         "summary": "Petugas mengklaim/memproses order penjemputan baru (Khusus Petugas)",
-        "tags": [
-          "Setor Sampah (Petugas)"
-        ],
+        "tags": ["Setor Sampah (Petugas)"],
         "security": [
           {
             "bearerAuth": []
@@ -2785,9 +2608,7 @@
     "/api/setor/{id}/complete": {
       "put": {
         "summary": "Petugas menyelesaikan order penjemputan, menimbang sampah, dan memberikan poin reward (Khusus Petugas)",
-        "tags": [
-          "Setor Sampah (Petugas)"
-        ],
+        "tags": ["Setor Sampah (Petugas)"],
         "security": [
           {
             "bearerAuth": []
@@ -2810,10 +2631,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "berat_sampah",
-                  "foto_bukti_penjemputan"
-                ],
+                "required": ["berat_sampah", "foto_bukti_penjemputan"],
                 "properties": {
                   "berat_sampah": {
                     "type": "number",
