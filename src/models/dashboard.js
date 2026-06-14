@@ -62,8 +62,10 @@ const Dashboard = {
     // list artikel 3 terbaru
     const [recentArticles] = await db.query(`
       SELECT 
-        a.id_artikel, a.judul, a.foto_thumbnail, a.isi, a.created_at
+        a.id_artikel, a.judul, a.foto_thumbnail, a.isi, a.created_at,
+        ja.nama AS nama_kategori
       FROM artikel a
+      LEFT JOIN jenis_artikel ja ON a.id_jenis_artikel = ja.id_jenis_artikel
       WHERE a.is_delete = 0
       ORDER BY a.created_at DESC
       LIMIT 3
@@ -79,7 +81,8 @@ const Dashboard = {
         judul: art.judul,
         foto_thumbnail: art.foto_thumbnail,
         isi: preview,
-        created_at: art.created_at
+        created_at: art.created_at,
+        nama_kategori: art.nama_kategori || ""
       };
     });
 
