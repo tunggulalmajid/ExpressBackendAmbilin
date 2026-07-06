@@ -1001,7 +1001,7 @@
             "description": "Berhasil Mendapatkan Data Profil",
             "content": {
               "application/json": {
-                "schema": {
+                "schema": { 
                   "type": "object",
                   "properties": {
                     "status": {
@@ -1010,7 +1010,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Berhasil mendapatkan data profil"
+                      "example": "Berhasil mendapatkan data profil."
                     },
                     "data": {
                       "$ref": "#/components/schemas/Profile"
